@@ -1,11 +1,19 @@
 package com.note_scrns_android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class New_noteActivity extends AppCompatActivity {
 
@@ -34,6 +43,9 @@ public class New_noteActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     String pathAudio;
     Bitmap image;
+    Location userlocation;
+    LocationManager locationManager;
+    LocationListener locationListener;
 
 
     @Override
@@ -71,10 +83,96 @@ public class New_noteActivity extends AppCompatActivity {
                 selectImage();
             }
         });
+
+        new_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(CheckValidation()) {
+//                    Notes note = new Notes(description.getText().toString(),title.getText().toString(),userlocation.getLatitude(),userlocation.getLongitude(),new Date().getTime(),selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image),pathAudio);
+//                    notesDatabase.getNoteDao().insert(note);
+                    drawer_txt.performClick();
+                }
+            }
+        });
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                userlocation = location;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        if (!hasLocationPermission())
+            requestLocationPermission();
+        else
+            startUpdateLocation();
     }
 
     private void selectImage() {
         gallery();
+
+    }
+
+    private void startUpdateLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+    }
+
+    private boolean hasLocationPermission() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (REQUEST_CODE == requestCode) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+            }
+        }
+    }
+
+    public boolean CheckValidation(){
+
+        if (title.getText().toString().trim().length() == 0) {
+            title.setError("Please enter title");
+            title.requestFocus();
+            return false;
+
+        }else if(description.getText().toString().trim().length() == 0) {
+
+            description.setError("Please enter description");
+            description.requestFocus();
+            return false;
+        }
+//        else if(selectedSubject == null){
+//            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
+        return true;
+
 
     }
 
