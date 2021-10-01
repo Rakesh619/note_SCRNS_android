@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 public class New_noteActivity extends AppCompatActivity {
 
@@ -25,6 +31,10 @@ public class New_noteActivity extends AppCompatActivity {
     ImageView share_pic,deal_icon;
     FrameLayout share_frame;
     String path;
+    private static final int REQUEST_CODE = 1;
+    String pathAudio;
+    Bitmap image;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +72,56 @@ public class New_noteActivity extends AppCompatActivity {
             }
         });
     }
+
     private void selectImage() {
         gallery();
 
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+        if (reqCode == CAMERA_REQUEST && resultCode == RESULT_OK)
+        {
+            image = (Bitmap) data.getExtras().get("data");
+            share_pic.setImageBitmap(image);
+            deal_icon.setVisibility(View.GONE);
+            deal_txt.setVisibility(View.GONE);
+        }
+        else if(reqCode == 112 && resultCode == RESULT_OK){
+            pathAudio = data.getStringExtra("audio");
+        }
+        else if(reqCode == GALLERY_REQUEST && resultCode == RESULT_OK){
+
+            Uri uri = data.getData();
+            try {
+                image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                share_pic.setImageBitmap(image);
+                deal_icon.setVisibility(View.GONE);
+                deal_txt.setVisibility(View.GONE);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        else if (reqCode == 11){
+            if(resultCode == RESULT_OK) {
+                int subjectID = data.getIntExtra("data",-1);
+                if(subjectID != -1){
+//                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
+//                        if(sub.getSubject_id() == subjectID){
+//                            selectedSubject = sub;
+//                            subject.setText(sub.getSubject_name());
+//                        }
+//                    }
+
+                }
+            }
+        }
+        else{
+
+        }
     }
     public void gallery() {
 
