@@ -163,8 +163,37 @@ public class New_noteActivity extends AppCompatActivity {
             }
         });
 
-
+        subject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),SubjectActivity.class);
+                startActivityForResult(i, 11);
+            }
+        });
     }
+
+
+    private void getAndSetNotes() {
+        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+        int index = getIntent().getIntExtra("selectedIndex",-1);
+        if (index != -1){
+            Notes note = notes.get(index);
+            title.setText(note.getTitle());
+            description.setText(note.getDescription());
+            byte[] data = note.getNote_image();
+            if(data != null){
+                image = DataConverter.convertByteArray2Bitmap(data);
+                share_pic.setImageBitmap(image);
+                share_pic.setVisibility(View.VISIBLE);
+            }
+            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+            subject.setText(sub.getSubject_name());
+            selectedSubject = sub;
+
+        }
+    }
+
+
 
     private void selectImage() {
         gallery();
