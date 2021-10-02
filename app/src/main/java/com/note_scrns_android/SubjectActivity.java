@@ -56,11 +56,11 @@ public class SubjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //save item
-                        Subjects subject =  new Subjects(sub.getText().toString());
-
-                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
-                        madapter.list.clear();
-                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
+//                        Subjects subject =  new Subjects(sub.getText().toString());
+//
+//                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
+//                        madapter.list.clear();
+//                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
                         recyclerView.getAdapter().notifyDataSetChanged();
                         alertDialog.dismiss();
                     }
