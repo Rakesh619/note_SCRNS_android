@@ -5,7 +5,11 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,8 @@ public class AudioActivity extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     public String path;
     MediaRecorder rec = new MediaRecorder();
+    MediaPlayer mp = new MediaPlayer();
+
     private final String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -152,5 +158,36 @@ public class AudioActivity extends AppCompatActivity {
         rec.stop();
         rec.reset();
 
+    }
+
+    public void playOrStopRecording(String path) throws IOException {
+        if(mp.isPlaying()){
+            mp.stop();
+        }
+        else{
+            mp = new MediaPlayer();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mp.setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                        .build());
+            } else {
+                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            }
+            try {
+                mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
+                    }
+                });
+                mp.setDataSource(path);
+                mp.prepareAsync();
+                mp.setVolume(10, 10);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
