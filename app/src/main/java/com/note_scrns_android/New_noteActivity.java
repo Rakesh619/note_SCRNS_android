@@ -59,7 +59,6 @@ public class New_noteActivity extends AppCompatActivity {
         deal_txt=(TextView)findViewById(R.id.deal_txt);
         deal_icon=(ImageView) findViewById(R.id.deal_icon);
         description=(EditText) findViewById(R.id.description);
-        record=(Button) findViewById(R.id.record_audio);
         subject=(Button) findViewById(R.id.select_subject);
         share_layout=(RelativeLayout) findViewById(R.id.share_layout);
         share_pic=(ImageView) findViewById(R.id.share_pic);
@@ -68,6 +67,7 @@ public class New_noteActivity extends AppCompatActivity {
         drawer_txt.setText("Back");
         new_note.setText("Save");
         txt_title.setText("New Note");
+        share_frame.setVisibility(View.VISIBLE);
         share_layout.setVisibility(View.VISIBLE);
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override

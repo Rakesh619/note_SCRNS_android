@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".New_noteActivity"
     android:orientation="vertical"
+    android:background="@color/colorAccent"
     >
     <include layout="@layout/header_item"/>
 
@@ -37,7 +38,7 @@
                 android:padding="5dp"/>
 
             <EditText android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="220dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -62,6 +63,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="40dp"
                 android:layout_marginLeft="40dp"
+                android:visibility="gone"
                 android:background="@drawable/edittext_bg"
                 android:id="@+id/share_frame"
                 android:layout_gravity="center">
@@ -114,17 +116,7 @@
                 android:id="@+id/select_subject"
                 android:textColor="#fff"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_50"
-                android:background="@drawable/button_bg"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:text="Record audio"
-                android:textAllCaps="false"
-                android:id="@+id/record_audio"
-                android:textColor="#fff"/>
+
 
 
 
