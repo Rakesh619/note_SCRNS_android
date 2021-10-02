@@ -48,6 +48,7 @@ public class New_noteActivity extends AppCompatActivity {
     String from="";
     LocationManager locationManager;
     LocationListener locationListener;
+    Subjects selectedSubject;
 
 
     @Override
@@ -238,10 +239,10 @@ public class New_noteActivity extends AppCompatActivity {
             description.requestFocus();
             return false;
         }
-//        else if(selectedSubject == null){
-//            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
+        else if(selectedSubject == null){
+            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
 
 
