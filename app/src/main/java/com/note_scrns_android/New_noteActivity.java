@@ -255,6 +255,7 @@ public class New_noteActivity extends AppCompatActivity {
         {
             image = (Bitmap) data.getExtras().get("data");
             share_pic.setImageBitmap(image);
+            share_frame.setVisibility(View.VISIBLE);
             deal_icon.setVisibility(View.GONE);
             deal_txt.setVisibility(View.GONE);
         }
@@ -267,6 +268,8 @@ public class New_noteActivity extends AppCompatActivity {
             try {
                 image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 share_pic.setImageBitmap(image);
+                share_frame.setVisibility(View.VISIBLE);
+
                 deal_icon.setVisibility(View.GONE);
                 deal_txt.setVisibility(View.GONE);
             } catch (IOException e) {
@@ -279,12 +282,12 @@ public class New_noteActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 int subjectID = data.getIntExtra("data",-1);
                 if(subjectID != -1){
-//                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
-//                        if(sub.getSubject_id() == subjectID){
-//                            selectedSubject = sub;
-//                            subject.setText(sub.getSubject_name());
-//                        }
-//                    }
+                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
+                        if(sub.getSubject_id() == subjectID){
+                            selectedSubject = sub;
+                            subject.setText(sub.getSubject_name());
+                        }
+                    }
 
                 }
             }
@@ -293,9 +296,10 @@ public class New_noteActivity extends AppCompatActivity {
 
         }
     }
+
     public void gallery() {
 
-        final CharSequence[] items = { "Take Photo", "Choose from Library","Cancel" };
+        final CharSequence[] items = { "Take Photo", "Choose from Library","Record Audio","Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Your Option");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -308,7 +312,11 @@ public class New_noteActivity extends AppCompatActivity {
                     CaptureImage();
                 } else if (items[item].equals("Choose from Library")) {
                     OpenGallery();
-                } else if(items[item].equals("Cancel")){
+                } else if(items[item].equals("Record Audio")){
+                    Intent i=new Intent(getApplicationContext(),AudioActivity.class);
+                    startActivityForResult(i,112);
+                }
+                else if(items[item].equals("Cancel")){
                     dialog.dismiss();
                 }
             }
@@ -316,6 +324,7 @@ public class New_noteActivity extends AppCompatActivity {
         builder.show();
 
     }
+
 
     public void CaptureImage() {
 
