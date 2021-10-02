@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 public class AudioActivity extends AppCompatActivity {
     TextView drawer_txt,new_note,txt_title;
@@ -50,6 +53,39 @@ public class AudioActivity extends AppCompatActivity {
                 intent_upload.setType("audio/*");
                 intent_upload.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent_upload,1);
+            }
+        });
+        new_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                //Subjects subject =  list.get(i);
+                intent.putExtra("audio", path);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+        record.setTag("record");
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(record.getTag() == "record"){
+                    try {
+                        start();
+                        record.setTag("stop");
+                        record.setText("Stop");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                else{
+                    stop();
+                    record.setText("Record");
+                    record.setTag("record");
+                }
+
             }
         });
     }
