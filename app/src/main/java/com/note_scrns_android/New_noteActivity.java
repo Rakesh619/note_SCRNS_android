@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 public class New_noteActivity extends AppCompatActivity {
 
@@ -44,6 +45,7 @@ public class New_noteActivity extends AppCompatActivity {
     String pathAudio;
     Bitmap image;
     Location userlocation;
+    String from="";
     LocationManager locationManager;
     LocationListener locationListener;
 
@@ -65,10 +67,49 @@ public class New_noteActivity extends AppCompatActivity {
         share_frame=(FrameLayout) findViewById(R.id.share_frame);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
-        new_note.setText("Save");
-        txt_title.setText("New Note");
         share_frame.setVisibility(View.VISIBLE);
         share_layout.setVisibility(View.VISIBLE);
+        Intent i=getIntent();
+        from=i.getStringExtra("from");
+
+        if(from.equalsIgnoreCase("new")){
+            txt_title.setText("New Note");
+            new_note.setText("Save");
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    userlocation = location;
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+
+            if (!hasLocationPermission())
+                requestLocationPermission();
+            else
+                startUpdateLocation();
+
+        }else {
+            txt_title.setText("Update Note");
+            new_note.setText("Update");
+            getAndSetNotes();
+
+
+        }
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,41 +128,42 @@ public class New_noteActivity extends AppCompatActivity {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckValidation()) {
-//                    Notes note = new Notes(description.getText().toString(),title.getText().toString(),userlocation.getLatitude(),userlocation.getLongitude(),new Date().getTime(),selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image),pathAudio);
-//                    notesDatabase.getNoteDao().insert(note);
-                    drawer_txt.performClick();
+
+                if(from.equalsIgnoreCase("new")) {
+                    if (CheckValidation()) {
+                        Notes note;
+                        if (image != null) {
+
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
+                        } else {
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+                        }
+                        notesDatabase.getNoteDao().insert(note);
+                        drawer_txt.performClick();
+                    }
+                }else {
+                    if(CheckValidation()) {
+                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+                        int index = getIntent().getIntExtra("selectedIndex",-1);
+                        if (index != -1){
+                            Notes note = notes.get(index);
+                            note.setTitle(title.getText().toString());
+                            note.setDescription(description.getText().toString());
+                            note.setNote_audio(pathAudio);
+                            note.setSubject_id_fk(selectedSubject.getSubject_id());
+                            if(image != null){
+                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
+                            }
+                            notesDatabase.getNoteDao().update(note);
+                        }
+
+                        drawer_txt.performClick();
+                    }
                 }
             }
         });
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                userlocation = location;
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        if (!hasLocationPermission())
-            requestLocationPermission();
-        else
-            startUpdateLocation();
     }
 
     private void selectImage() {
