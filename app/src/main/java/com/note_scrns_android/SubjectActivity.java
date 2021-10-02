@@ -38,6 +38,41 @@ public class SubjectActivity extends AppCompatActivity {
             }
         });
 
-      
+        new_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View dialogView = inflater.inflate(R.layout.subject_dialog, null);
+                mainDialog.setView(dialogView);
+
+                final Button save = (Button) dialogView.findViewById(R.id.save);
+                final ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
+                final EditText sub = (EditText) dialogView.findViewById(R.id.sub_txt);
+                final AlertDialog alertDialog = mainDialog.create();
+                alertDialog.show();
+
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //save item
+                        Subjects subject =  new Subjects(sub.getText().toString());
+
+                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
+                        madapter.list.clear();
+                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        alertDialog.dismiss();
+                    }
+                });
+                cross.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+            }
+        });
     }
 }
