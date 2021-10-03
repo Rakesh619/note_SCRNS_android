@@ -6,12 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.lambton.note_javadocjuveniles_android.Daos.NoteDao;
-import com.lambton.note_javadocjuveniles_android.Daos.SubjectDao;
-import com.lambton.note_javadocjuveniles_android.Models.Notes;
-import com.lambton.note_javadocjuveniles_android.Models.Subjects;
 import com.note_scrns_android.Daos.NoteDaos;
+import com.note_scrns_android.Daos.SubjectDao;
 import com.note_scrns_android.Models.Notes;
+import com.note_scrns_android.Models.Subjects;
 
 
 @Database(entities = { Notes.class, Subjects.class }, version = 1)

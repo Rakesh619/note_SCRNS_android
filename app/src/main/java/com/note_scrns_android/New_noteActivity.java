@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.note_scrns_android.Models.Notes;
+import com.note_scrns_android.Models.Subjects;
 import com.note_scrns_android.Utils.DataConverter;
 
 import java.io.IOException;
@@ -198,7 +199,7 @@ public class New_noteActivity extends AppCompatActivity {
 //            selectedSubject = sub;
 
         }
-    }
+
 
 
 
@@ -245,10 +246,10 @@ public class New_noteActivity extends AppCompatActivity {
             description.requestFocus();
             return false;
         }
-//        else if(selectedSubject == null){
-//            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
+        else if(selectedSubject == null){
+            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
 
 
@@ -288,12 +289,12 @@ public class New_noteActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 int subjectID = data.getIntExtra("data",-1);
                 if(subjectID != -1){
-//                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
-//                        if(sub.getSubject_id() == subjectID){
-//                            selectedSubject = sub;
-//                            subject.setText(sub.getSubject_name());
-//                        }
-//                    }
+                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
+                        if(sub.getSubject_id() == subjectID){
+                            selectedSubject = sub;
+                            subject.setText(sub.getSubject_name());
+                        }
+                    }
 
                 }
             }
