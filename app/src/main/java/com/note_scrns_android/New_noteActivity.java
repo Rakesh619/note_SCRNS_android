@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.note_scrns_android.Models.Notes;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +50,8 @@ public class New_noteActivity extends AppCompatActivity {
     String from="";
     LocationManager locationManager;
     LocationListener locationListener;
-   // Subjects selectedSubject;
+    NotesDatabase notesDatabase;
+    Subjects selectedSubject;
 
 
     @Override
@@ -70,6 +73,8 @@ public class New_noteActivity extends AppCompatActivity {
         drawer_txt.setText("Back");
         share_frame.setVisibility(View.VISIBLE);
         share_layout.setVisibility(View.VISIBLE);
+        notesDatabase = NotesDatabase.getInstance(New_noteActivity.this);
+
         Intent i=getIntent();
         from=i.getStringExtra("from");
 
@@ -132,31 +137,31 @@ public class New_noteActivity extends AppCompatActivity {
 
                 if(from.equalsIgnoreCase("new")) {
                     if (CheckValidation()) {
-//                        Notes note;
-//                        if (image != null) {
-//
-//                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
-//                        } else {
-//                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
-//                        }
-//                        notesDatabase.getNoteDao().insert(note);
+                        Notes note;
+                        if (image != null) {
+
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
+                        } else {
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+                        }
+                        notesDatabase.getNoteDao().insert(note);
                         drawer_txt.performClick();
                     }
                 }else {
                     if(CheckValidation()) {
-//                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
-//                        int index = getIntent().getIntExtra("selectedIndex",-1);
-//                        if (index != -1){
-//                            Notes note = notes.get(index);
-//                            note.setTitle(title.getText().toString());
-//                            note.setDescription(description.getText().toString());
-//                            note.setNote_audio(pathAudio);
-//                            note.setSubject_id_fk(selectedSubject.getSubject_id());
-//                            if(image != null){
-//                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
-//                            }
-//                            notesDatabase.getNoteDao().update(note);
-//                        }
+                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+                        int index = getIntent().getIntExtra("selectedIndex",-1);
+                        if (index != -1){
+                            Notes note = notes.get(index);
+                            note.setTitle(title.getText().toString());
+                            note.setDescription(description.getText().toString());
+                            note.setNote_audio(pathAudio);
+                            note.setSubject_id_fk(selectedSubject.getSubject_id());
+                            if(image != null){
+                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
+                            }
+                            notesDatabase.getNoteDao().update(note);
+                        }
 
                         drawer_txt.performClick();
                     }
