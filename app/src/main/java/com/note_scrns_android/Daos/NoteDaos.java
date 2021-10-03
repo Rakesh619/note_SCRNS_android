@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.note_scrns_android.Models.Notes;
+
 import java.util.List;
 @Dao
 public interface NoteDaos {

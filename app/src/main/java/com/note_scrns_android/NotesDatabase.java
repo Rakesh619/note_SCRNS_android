@@ -10,11 +10,13 @@ import com.lambton.note_javadocjuveniles_android.Daos.NoteDao;
 import com.lambton.note_javadocjuveniles_android.Daos.SubjectDao;
 import com.lambton.note_javadocjuveniles_android.Models.Notes;
 import com.lambton.note_javadocjuveniles_android.Models.Subjects;
+import com.note_scrns_android.Daos.NoteDaos;
+import com.note_scrns_android.Models.Notes;
 
 
 @Database(entities = { Notes.class, Subjects.class }, version = 1)
 public abstract class NotesDatabase extends RoomDatabase {
-    public abstract NoteDao getNoteDao();
+    public abstract NoteDaos getNoteDao();
     public abstract SubjectDao getSubjectDao();
     private static NotesDatabase noteDB;
     public static NotesDatabase getInstance(Context context) {

@@ -13,9 +13,14 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.note_scrns_android.Adapter.notes_Adapter;
+import com.note_scrns_android.Models.Notes;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     TextView drawer_txt,new_note,txt_title;
@@ -23,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     EditText search;
     RecyclerView recyclerView;
     notes_Adapter notesAdapter;
+    NotesDatabase notesDatabase;
+    List<Notes> listNotes;
+    LinearLayout itemlayout;
+    RelativeLayout no_note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +43,22 @@ public class MainActivity extends AppCompatActivity {
         search=(EditText) findViewById(R.id.search_txt);
         search_icon=(ImageView) findViewById(R.id.search_icon);
         recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
+        itemlayout=(LinearLayout) findViewById(R.id.item_layout);
+        no_note=(RelativeLayout) findViewById(R.id.no_notes);
+
         drawer_txt.setVisibility(View.GONE);
         new_note.setText("New");
         txt_title.setText("Notes");
         notesAdapter=new notes_Adapter();
+        notesDatabase = NotesDatabase.getInstance(MainActivity.this);
+        listNotes =  NotesDatabase.getInstance(MainActivity.this).getNoteDao().getAll();
+        if(listNotes.size()==0){
+            no_note.setVisibility(View.VISIBLE);
+            itemlayout.setVisibility(View.GONE);
+        }else {
+            no_note.setVisibility(View.GONE);
+            itemlayout.setVisibility(View.VISIBLE);
+        }
 
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override

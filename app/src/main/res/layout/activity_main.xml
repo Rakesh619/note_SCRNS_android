@@ -9,6 +9,12 @@
     tools:context=".MainActivity">
 
     <include layout="@layout/header_item"></include>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/item_layout"
+        android:visibility="gone"
+        android:orientation="vertical">
     <include layout="@layout/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,13 +32,13 @@
         android:layout_marginTop="@dimen/view_20">
 
     </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/no_notes"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/view_20"
+        android:visibility="visible"
         android:background="@color/colorAccent">
         <TextView
             android:layout_width="match_parent"
