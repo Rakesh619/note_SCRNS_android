@@ -196,8 +196,8 @@ public class New_noteActivity extends AppCompatActivity {
 //            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
 //            subject.setText(sub.getSubject_name());
 //            selectedSubject = sub;
-//
-//        }
+
+        }
     }
 
 
