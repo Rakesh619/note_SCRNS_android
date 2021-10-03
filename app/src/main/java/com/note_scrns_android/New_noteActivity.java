@@ -48,7 +48,7 @@ public class New_noteActivity extends AppCompatActivity {
     String from="";
     LocationManager locationManager;
     LocationListener locationListener;
-    Subjects selectedSubject;
+   // Subjects selectedSubject;
 
 
     @Override
@@ -132,31 +132,31 @@ public class New_noteActivity extends AppCompatActivity {
 
                 if(from.equalsIgnoreCase("new")) {
                     if (CheckValidation()) {
-                        Notes note;
-                        if (image != null) {
-
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
-                        } else {
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
-                        }
-                        notesDatabase.getNoteDao().insert(note);
+//                        Notes note;
+//                        if (image != null) {
+//
+//                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
+//                        } else {
+//                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+//                        }
+//                        notesDatabase.getNoteDao().insert(note);
                         drawer_txt.performClick();
                     }
                 }else {
                     if(CheckValidation()) {
-                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
-                        int index = getIntent().getIntExtra("selectedIndex",-1);
-                        if (index != -1){
-                            Notes note = notes.get(index);
-                            note.setTitle(title.getText().toString());
-                            note.setDescription(description.getText().toString());
-                            note.setNote_audio(pathAudio);
-                            note.setSubject_id_fk(selectedSubject.getSubject_id());
-                            if(image != null){
-                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
-                            }
-                            notesDatabase.getNoteDao().update(note);
-                        }
+//                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+//                        int index = getIntent().getIntExtra("selectedIndex",-1);
+//                        if (index != -1){
+//                            Notes note = notes.get(index);
+//                            note.setTitle(title.getText().toString());
+//                            note.setDescription(description.getText().toString());
+//                            note.setNote_audio(pathAudio);
+//                            note.setSubject_id_fk(selectedSubject.getSubject_id());
+//                            if(image != null){
+//                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
+//                            }
+//                            notesDatabase.getNoteDao().update(note);
+//                        }
 
                         drawer_txt.performClick();
                     }
@@ -175,23 +175,23 @@ public class New_noteActivity extends AppCompatActivity {
 
 
     private void getAndSetNotes() {
-        List<Notes> notes = notesDatabase.getNoteDao().getAll();
-        int index = getIntent().getIntExtra("selectedIndex",-1);
-        if (index != -1){
-            Notes note = notes.get(index);
-            title.setText(note.getTitle());
-            description.setText(note.getDescription());
-            byte[] data = note.getNote_image();
-            if(data != null){
-                image = DataConverter.convertByteArray2Bitmap(data);
-                share_pic.setImageBitmap(image);
-                share_pic.setVisibility(View.VISIBLE);
-            }
-            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
-            subject.setText(sub.getSubject_name());
-            selectedSubject = sub;
-
-        }
+//        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+//        int index = getIntent().getIntExtra("selectedIndex",-1);
+//        if (index != -1){
+//            Notes note = notes.get(index);
+//            title.setText(note.getTitle());
+//            description.setText(note.getDescription());
+//            byte[] data = note.getNote_image();
+//            if(data != null){
+//                image = DataConverter.convertByteArray2Bitmap(data);
+//                share_pic.setImageBitmap(image);
+//                share_pic.setVisibility(View.VISIBLE);
+//            }
+//            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+//            subject.setText(sub.getSubject_name());
+//            selectedSubject = sub;
+//
+//        }
     }
 
 
@@ -239,10 +239,10 @@ public class New_noteActivity extends AppCompatActivity {
             description.requestFocus();
             return false;
         }
-        else if(selectedSubject == null){
-            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
-            return false;
-        }
+//        else if(selectedSubject == null){
+//            Toast.makeText(getApplicationContext(),"Please Select Subject",Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
         return true;
 
 
@@ -282,12 +282,12 @@ public class New_noteActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 int subjectID = data.getIntExtra("data",-1);
                 if(subjectID != -1){
-                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
-                        if(sub.getSubject_id() == subjectID){
-                            selectedSubject = sub;
-                            subject.setText(sub.getSubject_name());
-                        }
-                    }
+//                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
+//                        if(sub.getSubject_id() == subjectID){
+//                            selectedSubject = sub;
+//                            subject.setText(sub.getSubject_name());
+//                        }
+//                    }
 
                 }
             }
