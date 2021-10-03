@@ -50,15 +50,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         Intent i = new Intent();
-//        List<Notes> notes = NotesDatabase.getInstance(getApplicationContext()).getNoteDao().getAll();
-//        int index = getIntent().getIntExtra("selectedIndex",-1);
-//        if (index != -1){
-//            note = notes.get(index);
-//            lat = note.getLatitude();
-//            longi = note.getLongitude();
-//            sub = NotesDatabase.getInstance(this).getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
-//            mapFragment.getMapAsync(this);
-//        }
+        List<Notes> notes = NotesDatabase.getInstance(getApplicationContext()).getNoteDao().getAll();
+        int index = getIntent().getIntExtra("selectedIndex",-1);
+        if (index != -1){
+            note = notes.get(index);
+            lat = note.getLatitude();
+            longi = note.getLongitude();
+            sub = NotesDatabase.getInstance(this).getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+            mapFragment.getMapAsync(this);
+        }
     }
 
     @Override
