@@ -21,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.note_scrns_android.Adapter.notes_Adapter;
-import com.note_scrns_android.Models.Notes;
+import com.note_scrns_android.Adapter.noteslist_Adapter;
+import com.note_scrns_android.Models.NotesPojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView search_icon;
     EditText search;
     RecyclerView recyclerView;
-    notes_Adapter notesAdapter;
-    NotesDatabase notesDatabase;
-    List<Notes> listNotes;
+    noteslist_Adapter notesAdapter;
+    DatabaseHelper databaseHelper;
+    List<NotesPojo> listNotes;
     LinearLayout itemlayout;
     RelativeLayout no_note;
 
@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         drawer_txt.setVisibility(View.GONE);
         new_note.setText("New");
         txt_title.setText("Notes");
-        notesDatabase = NotesDatabase.getInstance(MainActivity.this);
-        listNotes =  NotesDatabase.getInstance(MainActivity.this).getNoteDao().getAll();
+        databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
+        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteDao().getAll();
         if(listNotes.size()==0){
             no_note.setVisibility(View.VISIBLE);
             itemlayout.setVisibility(View.GONE);
@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(),New_noteActivity.class);
+                Intent i=new Intent(getApplicationContext(), NewView_noteActivity.class);
+                i.putExtra("from","new");
                 startActivity(i);
             }
         });
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        notesAdapter = new notes_Adapter(this,listNotes,NotesDatabase.getInstance(MainActivity.this).getSubjectDao().getAll()) {
+        notesAdapter = new noteslist_Adapter(this,listNotes, DatabaseHelper.getInstance(MainActivity.this).getSubjectDao().getAll()) {
             @Override
             public void deleteAddress(final int pos) {
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        notesDatabase.getNoteDao().delete(listNotes.get(pos));
+                        databaseHelper.getNoteDao().delete(listNotes.get(pos));
                         listNotes.remove(pos);
                         recyclerView.getAdapter().notifyDataSetChanged();
                         alertDialog.dismiss();
@@ -139,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(notesAdapter);
     }
     private void filter(String text) {
-        listNotes =  NotesDatabase.getInstance(MainActivity.this).getNoteDao().getAll();
-        List<Notes> temp = new ArrayList();
-        for (Notes n :listNotes) {
+        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteDao().getAll();
+        List<NotesPojo> temp = new ArrayList();
+        for (NotesPojo n :listNotes) {
             if(n.getTitle().toLowerCase().contains(text.toLowerCase()) || n.getDescription().toLowerCase().contains(text.toLowerCase())){
                 temp.add(n);
             }

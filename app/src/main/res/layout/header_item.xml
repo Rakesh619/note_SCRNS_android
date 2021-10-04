@@ -15,7 +15,7 @@
         <TextView
 
             android:layout_centerVertical="true"
-            android:text="Notes"
+            android:text="NotesPojo"
             android:textStyle="bold"
             android:id="@+id/txt_title"
             android:gravity="center"

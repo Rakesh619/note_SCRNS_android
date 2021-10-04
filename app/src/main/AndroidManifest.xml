@@ -22,9 +22,9 @@
             android:value="@string/google_maps_key" />
         <activity android:name=".MapActivity"
         ></activity>
-        <activity android:name=".AudioActivity" />
-        <activity android:name=".SubjectActivity" />
-        <activity android:name=".New_noteActivity" />
+        <activity android:name=".RecorderAudioActivity" />
+        <activity android:name=".NotesSubjectActivity" />
+        <activity android:name=".NewView_noteActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

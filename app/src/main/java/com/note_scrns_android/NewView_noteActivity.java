@@ -26,15 +26,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.note_scrns_android.Models.Notes;
-import com.note_scrns_android.Models.Subjects;
-import com.note_scrns_android.Utils.DataConverter;
+
+import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.SubjectPojo;
+import com.note_scrns_android.Utils.ImageConverter;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-public class New_noteActivity extends AppCompatActivity {
+public class NewView_noteActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 102;
     private static final int GALLERY_REQUEST = 101;
@@ -52,8 +53,8 @@ public class New_noteActivity extends AppCompatActivity {
     String from="";
     LocationManager locationManager;
     LocationListener locationListener;
-    NotesDatabase notesDatabase;
-    Subjects selectedSubject;
+    DatabaseHelper databaseHelper;
+    SubjectPojo selectedSubject;
 
 
     @Override
@@ -75,7 +76,7 @@ public class New_noteActivity extends AppCompatActivity {
         drawer_txt.setText("Back");
         share_frame.setVisibility(View.VISIBLE);
         share_layout.setVisibility(View.VISIBLE);
-        notesDatabase = NotesDatabase.getInstance(New_noteActivity.this);
+        databaseHelper = DatabaseHelper.getInstance(NewView_noteActivity.this);
 
         Intent i=getIntent();
         from=i.getStringExtra("from");
@@ -139,30 +140,30 @@ public class New_noteActivity extends AppCompatActivity {
 
                 if(from.equalsIgnoreCase("new")) {
                     if (CheckValidation()) {
-                        Notes note;
+                        NotesPojo note;
                         if (image != null) {
 
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), DataConverter.convertImage2ByteArray(image), pathAudio);
+                            note = new NotesPojo(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
                         } else {
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+                            note = new NotesPojo(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
                         }
-                        notesDatabase.getNoteDao().insert(note);
+                        databaseHelper.getNoteDao().insert(note);
                         drawer_txt.performClick();
                     }
                 }else {
                     if(CheckValidation()) {
-                        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+                        List<NotesPojo> notes = databaseHelper.getNoteDao().getAll();
                         int index = getIntent().getIntExtra("selectedIndex",-1);
                         if (index != -1){
-                            Notes note = notes.get(index);
+                            NotesPojo note = notes.get(index);
                             note.setTitle(title.getText().toString());
                             note.setDescription(description.getText().toString());
                             note.setNote_audio(pathAudio);
                             note.setSubject_id_fk(selectedSubject.getSubject_id());
                             if(image != null){
-                                note.setNote_image(DataConverter.convertImage2ByteArray(image));
+                                note.setNote_image(ImageConverter.convertImage2ByteArray(image));
                             }
-                            notesDatabase.getNoteDao().update(note);
+                            databaseHelper.getNoteDao().update(note);
                         }
 
                         drawer_txt.performClick();
@@ -174,7 +175,7 @@ public class New_noteActivity extends AppCompatActivity {
         subject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(),SubjectActivity.class);
+                Intent i=new Intent(getApplicationContext(), NotesSubjectActivity.class);
                 startActivityForResult(i, 11);
             }
         });
@@ -182,22 +183,22 @@ public class New_noteActivity extends AppCompatActivity {
 
 
     private void getAndSetNotes() {
-        List<Notes> notes = notesDatabase.getNoteDao().getAll();
+        List<NotesPojo> notes = databaseHelper.getNoteDao().getAll();
         int index = getIntent().getIntExtra("selectedIndex", -1);
         if (index != -1) {
-            Notes note = notes.get(index);
+            NotesPojo note = notes.get(index);
             title.setText(note.getTitle());
             description.setText(note.getDescription());
             byte[] data = note.getNote_image();
             if (data != null) {
-                image = DataConverter.convertByteArray2Bitmap(data);
+                image = ImageConverter.convertByteArray2Bitmap(data);
                 share_pic.setImageBitmap(image);
                 share_pic.setVisibility(View.VISIBLE);
                 share_frame.setVisibility(View.VISIBLE);
                 deal_icon.setVisibility(View.GONE);
                 deal_txt.setVisibility(View.GONE);
             }
-            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+            SubjectPojo sub = databaseHelper.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
             subject.setText(sub.getSubject_name());
             selectedSubject = sub;
 
@@ -292,7 +293,7 @@ public class New_noteActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 int subjectID = data.getIntExtra("data",-1);
                 if(subjectID != -1){
-                    for (Subjects sub: notesDatabase.getSubjectDao().getAll()) {
+                    for (SubjectPojo sub: databaseHelper.getSubjectDao().getAll()) {
                         if(sub.getSubject_id() == subjectID){
                             selectedSubject = sub;
                             subject.setText(sub.getSubject_name());
@@ -323,7 +324,7 @@ public class New_noteActivity extends AppCompatActivity {
                 } else if (items[item].equals("Choose from Library")) {
                     OpenGallery();
                 } else if(items[item].equals("Record Audio")){
-                    Intent i=new Intent(getApplicationContext(),AudioActivity.class);
+                    Intent i=new Intent(getApplicationContext(), RecorderAudioActivity.class);
                     startActivityForResult(i,112);
                 }
                 else if(items[item].equals("Cancel")){

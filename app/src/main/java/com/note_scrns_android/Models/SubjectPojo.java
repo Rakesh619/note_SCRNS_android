@@ -4,12 +4,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Subjects {
+public class SubjectPojo {
    @PrimaryKey(autoGenerate = true)
    private int subject_id;
    private String subject_name;
 
-   public Subjects(String subject_name) {
+   public SubjectPojo(String subject_name) {
       this.subject_name = subject_name;
    }
 

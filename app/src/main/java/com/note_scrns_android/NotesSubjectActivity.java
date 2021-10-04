@@ -15,16 +15,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.note_scrns_android.Adapter.subject_Adapter;
-import com.note_scrns_android.Models.Subjects;
+import com.note_scrns_android.Adapter.subjectlist_Adapter;
+import com.note_scrns_android.Models.SubjectPojo;
 
 import java.util.List;
 
-public class SubjectActivity extends AppCompatActivity {
+public class NotesSubjectActivity extends AppCompatActivity {
     TextView drawer_txt,new_note,txt_title;
     RecyclerView recyclerView;
-    subject_Adapter madapter;
-    List<Subjects> list;
+    subjectlist_Adapter madapter;
+    List<SubjectPojo> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class SubjectActivity extends AppCompatActivity {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
                 LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View dialogView = inflater.inflate(R.layout.subject_dialog, null);
                 mainDialog.setView(dialogView);
@@ -65,11 +65,11 @@ public class SubjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //save item
-                        Subjects subject =  new Subjects(sub.getText().toString());
+                        SubjectPojo subject =  new SubjectPojo(sub.getText().toString());
 
-                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
+                        DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().insert(subject);
                         madapter.list.clear();
-                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
+                        madapter.list.addAll(DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().getAll());
                         recyclerView.getAdapter().notifyDataSetChanged();
                         alertDialog.dismiss();
                     }
@@ -81,11 +81,11 @@ public class SubjectActivity extends AppCompatActivity {
                     }
                 });
 
-                madapter = new subject_Adapter(SubjectActivity.this,list) {
+                madapter = new subjectlist_Adapter(NotesSubjectActivity.this,list) {
                     @Override
                     public void deleteSubject(final int pos) {
 
-                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
                         LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View dialogView = inflater.inflate(R.layout.alert_dialog, null);
                         mainDialog.setView(dialogView);
@@ -110,7 +110,7 @@ public class SubjectActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 //delete item
-                                NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().delete( list.get(pos));
+                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().delete( list.get(pos));
                                 list.remove(pos);
                                 recyclerView.getAdapter().notifyDataSetChanged();
                                 alertDialog.dismiss();
@@ -128,7 +128,7 @@ public class SubjectActivity extends AppCompatActivity {
                     @Override
                     public void editSubject(final int i) {
 
-                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
                         LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View dialogView = inflater.inflate(R.layout.subject_dialog, null);
                         mainDialog.setView(dialogView);
@@ -144,9 +144,9 @@ public class SubjectActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 //save item
-                                Subjects subject =  list.get(i);
+                                SubjectPojo subject =  list.get(i);
                                 subject.setSubject_name(sub.getText().toString());
-                                NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().update(subject);
+                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().update(subject);
                                 alertDialog.dismiss();
                             }
                         });
@@ -161,7 +161,7 @@ public class SubjectActivity extends AppCompatActivity {
                     @Override
                     public void selectSubject(int i) {
                         Intent intent = new Intent();
-                        Subjects subject =  list.get(i);
+                        SubjectPojo subject =  list.get(i);
                         intent.putExtra("data", subject.getSubject_id());
                         setResult(RESULT_OK, intent);
                         finish();

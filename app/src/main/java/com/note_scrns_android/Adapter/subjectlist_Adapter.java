@@ -10,30 +10,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.note_scrns_android.Models.Subjects;
+import com.note_scrns_android.Models.SubjectPojo;
 import com.note_scrns_android.R;
 
 import java.util.List;
 
-public abstract class subject_Adapter extends RecyclerView.Adapter<subject_Adapter.ViewHolder> {
+public abstract class subjectlist_Adapter extends RecyclerView.Adapter<subjectlist_Adapter.ViewHolder> {
 
     public Context context;
-    public List<Subjects> list;
+    public List<SubjectPojo> list;
 
-    public subject_Adapter(Context context, List<Subjects> list) {
+    public subjectlist_Adapter(Context context, List<SubjectPojo> list) {
         this.context = context;
         this.list = list;
     }
 
     @NonNull
     @Override
-    public subject_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public subjectlist_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View  itemview= LayoutInflater.from(context).inflate(R.layout.subject_item,parent,false);
         return new ViewHolder(itemview);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull subject_Adapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull subjectlist_Adapter.ViewHolder holder, int position) {
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -14,21 +14,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.note_scrns_android.MapActivity;
-import com.note_scrns_android.Models.Notes;
-import com.note_scrns_android.Models.Subjects;
-import com.note_scrns_android.New_noteActivity;
+import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.SubjectPojo;
+import com.note_scrns_android.NewView_noteActivity;
 import com.note_scrns_android.R;
-import com.note_scrns_android.Utils.DataConverter;
+import com.note_scrns_android.Utils.ImageConverter;
 
 import java.util.Date;
 import java.util.List;
 
-public abstract class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.ViewHolder> {
+public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_Adapter.ViewHolder> {
     Context context;
-    public List<Notes> notes;
-    public List<Subjects> subjects;
+    public List<NotesPojo> notes;
+    public List<SubjectPojo> subjects;
 
-    public notes_Adapter(Context context, List<Notes> notes, List<Subjects> subjects) {
+    public noteslist_Adapter(Context context, List<NotesPojo> notes, List<SubjectPojo> subjects) {
         this.context = context;
         this.notes = notes;
         this.subjects = subjects;
@@ -61,7 +61,7 @@ public abstract class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.V
         });
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
-        for(Subjects sub:subjects){
+        for(SubjectPojo sub:subjects){
             if(sub.getSubject_id() == notes.get(position).getSubject_id_fk()){
                 holder.txtSubjectItem.setText("Subject: "+sub.getSubject_name());
             }
@@ -74,7 +74,7 @@ public abstract class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.V
 
         if(notes.get(position).getNote_image() != null){
             holder.note_img.setVisibility(View.VISIBLE);
-            Bitmap image = DataConverter.convertByteArray2Bitmap(notes.get(position).getNote_image());
+            Bitmap image = ImageConverter.convertByteArray2Bitmap(notes.get(position).getNote_image());
             if(image != null){
                 holder.note_img.setImageBitmap(image);
             }
@@ -109,7 +109,7 @@ public abstract class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.V
 
         @Override
         public void onClick(View view) {
-            Intent i=new Intent(context, New_noteActivity.class);
+            Intent i=new Intent(context, NewView_noteActivity.class);
             i.putExtra("from","update");
             i.putExtra("selectedIndex",getAdapterPosition());
             context.startActivity(i);

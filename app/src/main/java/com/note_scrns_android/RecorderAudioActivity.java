@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-public class AudioActivity extends AppCompatActivity {
+public class RecorderAudioActivity extends AppCompatActivity {
     TextView drawer_txt,new_note,txt_title;
     Button record,play,stop,choose;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -79,6 +79,22 @@ public class AudioActivity extends AppCompatActivity {
                 finish();
             }
         });
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    playOrStopRecording(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         record.setTag("record");
         record.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,57 +118,40 @@ public class AudioActivity extends AppCompatActivity {
 
             }
         });
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    playOrStopRecording(path);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+    }
+    public void playOrStopRecording(String path) throws IOException {
+        if(mp.isPlaying()){
+            mp.stop();
+        }
+        else{
+            mp = new MediaPlayer();
 
+            try {
+                mp.setDataSource(path);
+                mp.prepare();
+                mp.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void start() throws IOException {
         verifyStoragePermissions(this);
         String file_path=getApplicationContext().getFilesDir().getPath();
 
-        File file= new File(file_path);
-
         Long date=new Date().getTime();
         Date current_time = new Date(Long.valueOf(date));
-
-        rec.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
-        rec.setAudioChannels(1);
-        rec.setAudioSamplingRate(8000);
-        rec.setAudioEncodingBitRate(44100);
-        rec.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        String abc = getFilesDir().getAbsolutePath();
+        File file= new File(abc);
+        path =file+"/audio.m4a";
+        rec.setAudioSource(MediaRecorder.AudioSource.MIC);
+        rec.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         rec.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        if (!file.exists()){
-            file.mkdirs();
-        }
-
-        path =file+"/sss.3gp";
         rec.setOutputFile(path);
-
-        try {
-            rec.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this,"Sorry! file creation failed!"+e.getMessage(),Toast.LENGTH_SHORT).show();
-            return;
-        }
+        rec.prepare();
         rec.start();
-
 
 
 
@@ -161,37 +160,21 @@ public class AudioActivity extends AppCompatActivity {
     public void stop() {
         rec.stop();
         rec.reset();
+        rec.release();
+        Toast.makeText(this,path,Toast.LENGTH_LONG).show();
 
     }
+    public void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-    public void playOrStopRecording(String path) throws IOException {
-        if(mp.isPlaying()){
-            mp.stop();
-        }
-        else{
-            mp = new MediaPlayer();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mp.setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-                        .build());
-            } else {
-                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            }
-            try {
-                mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.start();
-                    }
-                });
-                mp.setDataSource(path);
-                mp.prepareAsync();
-                mp.setVolume(10, 10);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    this.permissions,
+                    REQUEST_RECORD_AUDIO_PERMISSION
+            );
         }
     }
 
@@ -220,17 +203,5 @@ public class AudioActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    public void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    this.permissions,
-                    REQUEST_RECORD_AUDIO_PERMISSION
-            );
-        }
-    }
 }
