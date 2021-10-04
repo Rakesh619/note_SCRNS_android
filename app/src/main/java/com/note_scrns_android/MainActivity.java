@@ -6,11 +6,15 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         drawer_txt.setVisibility(View.GONE);
         new_note.setText("New");
         txt_title.setText("Notes");
-        notesAdapter=new notes_Adapter();
         notesDatabase = NotesDatabase.getInstance(MainActivity.this);
         listNotes =  NotesDatabase.getInstance(MainActivity.this).getNoteDao().getAll();
         if(listNotes.size()==0){
@@ -85,6 +88,49 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        notesAdapter = new notes_Adapter(this,listNotes,NotesDatabase.getInstance(MainActivity.this).getSubjectDao().getAll()) {
+            @Override
+            public void deleteAddress(final int pos) {
+
+                final AlertDialog.Builder mainDialog = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+                mainDialog.setView(dialogView);
+
+                final Button cancel = (Button) dialogView.findViewById(R.id.cancel);
+                final Button save = (Button) dialogView.findViewById(R.id.save);
+                final  ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
+                final AlertDialog alertDialog = mainDialog.create();
+                alertDialog.show();
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        alertDialog.dismiss();
+
+                    }
+                });
+
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        notesDatabase.getNoteDao().delete(listNotes.get(pos));
+                        listNotes.remove(pos);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        alertDialog.dismiss();
+                    }
+                });
+                cross.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+            }
+        };
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         SnapHelper snapHelper = new LinearSnapHelper();

@@ -2,6 +2,8 @@ package com.note_scrns_android.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +13,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.note_scrns_android.MapActivity;
 import com.note_scrns_android.Models.Notes;
 import com.note_scrns_android.Models.Subjects;
 import com.note_scrns_android.New_noteActivity;
 import com.note_scrns_android.R;
+import com.note_scrns_android.Utils.DataConverter;
 
+import java.util.Date;
 import java.util.List;
 
-public class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.ViewHolder> {
+public abstract class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.ViewHolder> {
     Context context;
     public List<Notes> notes;
     public List<Subjects> subjects;
@@ -39,11 +44,52 @@ public class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAddress(position);
+            }
+        });
+
+        holder.map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(context, MapActivity.class);
+                i.putExtra("selectedIndex",position);
+                context.startActivity(i);
+            }
+        });
+        holder.title.setText(notes.get(position).getTitle());
+        holder.description.setText(notes.get(position).getDescription());
+        for(Subjects sub:subjects){
+            if(sub.getSubject_id() == notes.get(position).getSubject_id_fk()){
+                holder.txtSubjectItem.setText("Subject: "+sub.getSubject_name());
+            }
+        }
+
+        long millisecond = notes.get(position).getCreated();
+        // or you already have long value of date, use this instead of milliseconds variable.
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
+        holder.date.setText(dateString);
+
+        if(notes.get(position).getNote_image() != null){
+            holder.note_img.setVisibility(View.VISIBLE);
+            Bitmap image = DataConverter.convertByteArray2Bitmap(notes.get(position).getNote_image());
+            if(image != null){
+                holder.note_img.setImageBitmap(image);
+            }
+
+        }
+        else{
+            holder.note_img.setVisibility(View.GONE);
+            holder.note_img.setImageDrawable(null);
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return notes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -69,4 +115,5 @@ public class notes_Adapter extends RecyclerView.Adapter<notes_Adapter.ViewHolder
             context.startActivity(i);
         }
     }
+    public abstract void deleteAddress(int i);
 }
