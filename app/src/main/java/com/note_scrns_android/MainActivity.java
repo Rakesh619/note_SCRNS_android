@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.note_scrns_android.Adapter.notes_Adapter;
 import com.note_scrns_android.Models.Notes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-               // filter(s.toString());
+                filter(s.toString());
 
             }
         });
@@ -136,5 +137,16 @@ public class MainActivity extends AppCompatActivity {
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(notesAdapter);
+    }
+    private void filter(String text) {
+        listNotes =  NotesDatabase.getInstance(MainActivity.this).getNoteDao().getAll();
+        List<Notes> temp = new ArrayList();
+        for (Notes n :listNotes) {
+            if(n.getTitle().toLowerCase().contains(text.toLowerCase()) || n.getDescription().toLowerCase().contains(text.toLowerCase())){
+                temp.add(n);
+            }
+        }
+        notesAdapter.notes = temp;
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 }
