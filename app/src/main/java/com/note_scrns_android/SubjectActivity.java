@@ -1,10 +1,12 @@
 package com.note_scrns_android;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +15,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.note_scrns_android.Adapter.subject_Adapter;
+import com.note_scrns_android.Models.Subjects;
+
+import java.util.List;
+
 public class SubjectActivity extends AppCompatActivity {
     TextView drawer_txt,new_note,txt_title;
     RecyclerView recyclerView;
+    subject_Adapter madapter;
+    List<Subjects> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +65,11 @@ public class SubjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //save item
-//                        Subjects subject =  new Subjects(sub.getText().toString());
-//
-//                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
-//                        madapter.list.clear();
-//                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
+                        Subjects subject =  new Subjects(sub.getText().toString());
+
+                        NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().insert(subject);
+                        madapter.list.clear();
+                        madapter.list.addAll(NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().getAll());
                         recyclerView.getAdapter().notifyDataSetChanged();
                         alertDialog.dismiss();
                     }
@@ -71,6 +80,96 @@ public class SubjectActivity extends AppCompatActivity {
                         alertDialog.dismiss();
                     }
                 });
+
+                madapter = new subject_Adapter(SubjectActivity.this,list) {
+                    @Override
+                    public void deleteAddress(final int pos) {
+
+                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                        LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+                        mainDialog.setView(dialogView);
+
+                        final Button cancel = (Button) dialogView.findViewById(R.id.cancel);
+                        final Button save = (Button) dialogView.findViewById(R.id.save);
+                        final ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
+                        final TextView cat_name=(TextView)dialogView.findViewById(R.id.cat_name);
+                        final AlertDialog alertDialog = mainDialog.create();
+                        alertDialog.show();
+                        cat_name.setText("You want to delete this subject?");
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                alertDialog.dismiss();
+
+                            }
+                        });
+
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //delete item
+                                NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().delete( list.get(pos));
+                                list.remove(pos);
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                                alertDialog.dismiss();
+                            }
+                        });
+                        cross.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void editSubject(final int i) {
+
+                        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
+                        LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View dialogView = inflater.inflate(R.layout.subject_dialog, null);
+                        mainDialog.setView(dialogView);
+
+                        final Button save = (Button) dialogView.findViewById(R.id.save);
+                        final ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
+                        final EditText sub = dialogView.findViewById(R.id.sub_txt);
+                        sub.setText(list.get(i).getSubject_name());
+                        final AlertDialog alertDialog = mainDialog.create();
+                        alertDialog.show();
+
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //save item
+                                Subjects subject =  list.get(i);
+                                subject.setSubject_name(sub.getText().toString());
+                                NotesDatabase.getInstance(SubjectActivity.this).getSubjectDao().update(subject);
+                                alertDialog.dismiss();
+                            }
+                        });
+                        cross.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void selectSubject(int i) {
+                        Intent intent = new Intent();
+                        Subjects subject =  list.get(i);
+                        intent.putExtra("data", subject.getSubject_id());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                };
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(madapter);
 
             }
         });
