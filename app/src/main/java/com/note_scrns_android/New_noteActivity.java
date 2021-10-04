@@ -183,23 +183,26 @@ public class New_noteActivity extends AppCompatActivity {
 
     private void getAndSetNotes() {
 //        List<Notes> notes = notesDatabase.getNoteDao().getAll();
-//        int index = getIntent().getIntExtra("selectedIndex",-1);
-//        if (index != -1){
+//        int index = getIntent().getIntExtra("selectedIndex", -1);
+//        if (index != -1) {
 //            Notes note = notes.get(index);
 //            title.setText(note.getTitle());
 //            description.setText(note.getDescription());
 //            byte[] data = note.getNote_image();
-//            if(data != null){
+//            if (data != null) {
 //                image = DataConverter.convertByteArray2Bitmap(data);
 //                share_pic.setImageBitmap(image);
 //                share_pic.setVisibility(View.VISIBLE);
+//                share_frame.setVisibility(View.VISIBLE);
+//                deal_icon.setVisibility(View.GONE);
+//                deal_txt.setVisibility(View.GONE);
 //            }
 //            Subjects sub = notesDatabase.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
 //            subject.setText(sub.getSubject_name());
 //            selectedSubject = sub;
-
-        }
-
+//
+//        }
+    }
 
 
 

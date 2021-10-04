@@ -83,7 +83,7 @@ public class SubjectActivity extends AppCompatActivity {
 
                 madapter = new subject_Adapter(SubjectActivity.this,list) {
                     @Override
-                    public void deleteAddress(final int pos) {
+                    public void deleteSubject(final int pos) {
 
                         final AlertDialog.Builder mainDialog = new AlertDialog.Builder(SubjectActivity.this);
                         LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

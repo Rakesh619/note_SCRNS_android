@@ -37,7 +37,7 @@ public abstract class subject_Adapter extends RecyclerView.Adapter<subject_Adapt
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteAddress(position);
+                deleteSubject(position);
             }
         });
         holder.subject.setText(list.get(position).getSubject_name());
@@ -70,7 +70,7 @@ public abstract class subject_Adapter extends RecyclerView.Adapter<subject_Adapt
             return true;
         }
     }
-    public abstract void deleteAddress(int i);
+    public abstract void deleteSubject(int i);
     public abstract void editSubject(int i);
     public abstract void selectSubject(int i);
 }
