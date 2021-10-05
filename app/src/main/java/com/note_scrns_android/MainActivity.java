@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.note_scrns_android.Adapter.noteslist_Adapter;
-import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.Notes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     noteslist_Adapter notesAdapter;
     DatabaseHelper databaseHelper;
-    List<NotesPojo> listNotes;
+    List<Notes> listNotes;
     LinearLayout itemlayout;
     RelativeLayout no_note;
 
@@ -45,17 +45,17 @@ public class MainActivity extends AppCompatActivity {
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
         txt_title=(TextView)findViewById(R.id.txt_title);
         new_note=(TextView)findViewById(R.id.new_note);
-        search=(EditText) findViewById(R.id.search_txt);
-        search_icon=(ImageView) findViewById(R.id.search_icon);
         recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
         itemlayout=(LinearLayout) findViewById(R.id.item_layout);
         no_note=(RelativeLayout) findViewById(R.id.no_notes);
+        search=(EditText) findViewById(R.id.search_txt);
+        search_icon=(ImageView) findViewById(R.id.search_icon);
 
         drawer_txt.setVisibility(View.GONE);
-        new_note.setText("New");
-        txt_title.setText("Notes");
+        new_note.setText("Add");
+        txt_title.setText("All Notes");
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
-        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteDao().getAll();
+        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();
         if(listNotes.size()==0){
             no_note.setVisibility(View.VISIBLE);
             itemlayout.setVisibility(View.GONE);
@@ -86,18 +86,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+                search_note(s.toString());
 
             }
         });
 
-        notesAdapter = new noteslist_Adapter(this,listNotes, DatabaseHelper.getInstance(MainActivity.this).getSubjectDao().getAll()) {
+        notesAdapter = new noteslist_Adapter(this,listNotes, DatabaseHelper.getInstance(MainActivity.this).getSubjectInterface().getAll()) {
             @Override
-            public void deleteAddress(final int pos) {
+            public void deletenote(final int pos) {
 
                 final AlertDialog.Builder mainDialog = new AlertDialog.Builder(MainActivity.this);
                 LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+                View dialogView = inflater.inflate(R.layout.delete_dialog, null);
                 mainDialog.setView(dialogView);
 
                 final Button cancel = (Button) dialogView.findViewById(R.id.cancel);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        databaseHelper.getNoteDao().delete(listNotes.get(pos));
+                        databaseHelper.getNoteInterface().delete(listNotes.get(pos));
                         listNotes.remove(pos);
                         recyclerView.getAdapter().notifyDataSetChanged();
                         alertDialog.dismiss();
@@ -139,10 +139,10 @@ public class MainActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(notesAdapter);
     }
-    private void filter(String text) {
-        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteDao().getAll();
-        List<NotesPojo> temp = new ArrayList();
-        for (NotesPojo n :listNotes) {
+    private void search_note(String text) {
+        listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();
+        List<Notes> temp = new ArrayList();
+        for (Notes n :listNotes) {
             if(n.getTitle().toLowerCase().contains(text.toLowerCase()) || n.getDescription().toLowerCase().contains(text.toLowerCase())){
                 temp.add(n);
             }

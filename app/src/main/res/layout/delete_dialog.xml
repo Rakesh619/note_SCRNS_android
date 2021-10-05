@@ -65,10 +65,12 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="0px"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/view_50"
             android:text="Yes"
             android:textColor="@color/white"
             android:id="@+id/save"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_marginLeft="@dimen/view_10"
             android:background="@color/colorAccent"
             android:layout_marginBottom="5dp"
@@ -76,9 +78,11 @@
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="0px"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/view_50"
             android:text="No"
             android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/cancel"
             android:layout_marginRight="@dimen/view_10"
             android:background="@color/colorAccent"

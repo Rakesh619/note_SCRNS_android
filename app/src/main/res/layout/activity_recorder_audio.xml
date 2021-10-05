@@ -7,7 +7,7 @@
     android:background="@color/colorAccent"
     tools:context=".RecorderAudioActivity">
 
-    <include layout="@layout/header_item" />
+    <include layout="@layout/header_layout" />
 
     <LinearLayout
         android:layout_width="match_parent"

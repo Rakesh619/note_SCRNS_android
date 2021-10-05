@@ -15,7 +15,7 @@
         <TextView
 
             android:layout_centerVertical="true"
-            android:text="NotesPojo"
+            android:text="Notes"
             android:textStyle="bold"
             android:id="@+id/txt_title"
             android:gravity="center"
@@ -47,7 +47,7 @@
             android:padding="@dimen/view_10"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="New"
+            android:text="Add"
             android:textColor="@color/white"
             android:textSize="@dimen/txt_14"
             android:id="@+id/new_note"

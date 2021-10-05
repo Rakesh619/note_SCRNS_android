@@ -9,6 +9,6 @@ public class SubjectNotesPojo {
     @Embedded
     public SubjectPojo subject;
 
-    @Relation(parentColumn = "subject_id", entityColumn = "subject_id_fk", entity = NotesPojo.class)
-    public List<NotesPojo> notes;
+    @Relation(parentColumn = "subject_id", entityColumn = "subject_id_fk", entity = Notes.class)
+    public List<Notes> notes;
 }

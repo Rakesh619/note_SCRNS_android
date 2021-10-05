@@ -1,4 +1,4 @@
-package com.note_scrns_android.DatabaseInterface;
+package com.note_scrns_android.DatabaseIterface;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

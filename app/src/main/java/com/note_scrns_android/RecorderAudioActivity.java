@@ -8,12 +8,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +36,7 @@ public class RecorderAudioActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio);
+        setContentView(R.layout.activity_recorder_audio);
         record = (Button) findViewById(R.id.audioRecord);
         play = (Button) findViewById(R.id.audioPlay);
         stop = (Button) findViewById(R.id.audioStop);
@@ -83,6 +80,7 @@ public class RecorderAudioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+
                     playOrStopRecording(path);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -91,10 +89,14 @@ public class RecorderAudioActivity extends AppCompatActivity {
         });
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                if(mp.isPlaying()){
 
+                    mp.stop();
+                }
             }
         });
+
         record.setTag("record");
         record.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,9 +124,11 @@ public class RecorderAudioActivity extends AppCompatActivity {
     }
     public void playOrStopRecording(String path) throws IOException {
         if(mp.isPlaying()){
+
             mp.stop();
         }
         else{
+
             mp = new MediaPlayer();
 
             try {

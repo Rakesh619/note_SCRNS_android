@@ -14,7 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.Notes;
 import com.note_scrns_android.Models.SubjectPojo;
 
 import java.util.Date;
@@ -24,7 +24,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     TextView drawer_txt,new_note,txt_title;
     double lat,longi;
-    NotesPojo note;
+    Notes note;
     SubjectPojo sub;
 
 
@@ -51,13 +51,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         Intent i = new Intent();
-        List<NotesPojo> notes = DatabaseHelper.getInstance(getApplicationContext()).getNoteDao().getAll();
+        List<Notes> notes = DatabaseHelper.getInstance(getApplicationContext()).getNoteInterface().getAll();
         int index = getIntent().getIntExtra("selectedIndex",-1);
         if (index != -1){
             note = notes.get(index);
             lat = note.getLatitude();
             longi = note.getLongitude();
-            sub = DatabaseHelper.getInstance(this).getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+            sub = DatabaseHelper.getInstance(this).getSubjectInterface().getSubject(note.getSubject_id_fk()).get(0);
             mapFragment.getMapAsync(this);
         }
     }

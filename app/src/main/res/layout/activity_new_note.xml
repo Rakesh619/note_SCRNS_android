@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:background="@color/colorAccent"
     >
-    <include layout="@layout/header_item"/>
+    <include layout="@layout/header_layout"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -103,6 +103,15 @@
 
 
             </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_bg"
+                android:layout_margin="@dimen/txt_20"
+                android:id="@+id/record_path"
+                android:padding="@dimen/view_5"
+                android:visibility="visible"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"

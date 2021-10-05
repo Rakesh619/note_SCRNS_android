@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.Notes;
 import com.note_scrns_android.Models.SubjectPojo;
 import com.note_scrns_android.Utils.ImageConverter;
 
@@ -55,6 +55,7 @@ public class NewView_noteActivity extends AppCompatActivity {
     LocationListener locationListener;
     DatabaseHelper databaseHelper;
     SubjectPojo selectedSubject;
+    TextView record_path;
 
 
     @Override
@@ -72,10 +73,13 @@ public class NewView_noteActivity extends AppCompatActivity {
         share_layout=(RelativeLayout) findViewById(R.id.share_layout);
         share_pic=(ImageView) findViewById(R.id.share_pic);
         share_frame=(FrameLayout) findViewById(R.id.share_frame);
+        record_path=(TextView)findViewById(R.id.record_path);
+
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         share_frame.setVisibility(View.VISIBLE);
         share_layout.setVisibility(View.VISIBLE);
+        record_path.setVisibility(View.GONE);
         databaseHelper = DatabaseHelper.getInstance(NewView_noteActivity.this);
 
         Intent i=getIntent();
@@ -140,22 +144,22 @@ public class NewView_noteActivity extends AppCompatActivity {
 
                 if(from.equalsIgnoreCase("new")) {
                     if (CheckValidation()) {
-                        NotesPojo note;
+                        Notes note;
                         if (image != null) {
 
-                            note = new NotesPojo(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
                         } else {
-                            note = new NotesPojo(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
                         }
-                        databaseHelper.getNoteDao().insert(note);
+                        databaseHelper.getNoteInterface().insert(note);
                         drawer_txt.performClick();
                     }
                 }else {
                     if(CheckValidation()) {
-                        List<NotesPojo> notes = databaseHelper.getNoteDao().getAll();
+                        List<Notes> notes = databaseHelper.getNoteInterface().getAll();
                         int index = getIntent().getIntExtra("selectedIndex",-1);
                         if (index != -1){
-                            NotesPojo note = notes.get(index);
+                            Notes note = notes.get(index);
                             note.setTitle(title.getText().toString());
                             note.setDescription(description.getText().toString());
                             note.setNote_audio(pathAudio);
@@ -163,7 +167,7 @@ public class NewView_noteActivity extends AppCompatActivity {
                             if(image != null){
                                 note.setNote_image(ImageConverter.convertImage2ByteArray(image));
                             }
-                            databaseHelper.getNoteDao().update(note);
+                            databaseHelper.getNoteInterface().update(note);
                         }
 
                         drawer_txt.performClick();
@@ -183,22 +187,33 @@ public class NewView_noteActivity extends AppCompatActivity {
 
 
     private void getAndSetNotes() {
-        List<NotesPojo> notes = databaseHelper.getNoteDao().getAll();
+        List<Notes> notes = databaseHelper.getNoteInterface().getAll();
         int index = getIntent().getIntExtra("selectedIndex", -1);
         if (index != -1) {
-            NotesPojo note = notes.get(index);
+            Notes note = notes.get(index);
             title.setText(note.getTitle());
             description.setText(note.getDescription());
             byte[] data = note.getNote_image();
+            String audio_path=note.getNote_audio();
             if (data != null) {
                 image = ImageConverter.convertByteArray2Bitmap(data);
                 share_pic.setImageBitmap(image);
                 share_pic.setVisibility(View.VISIBLE);
                 share_frame.setVisibility(View.VISIBLE);
-                deal_icon.setVisibility(View.GONE);
+               share_layout.setVisibility(View.VISIBLE);
+                record_path.setVisibility(View.GONE);
                 deal_txt.setVisibility(View.GONE);
             }
-            SubjectPojo sub = databaseHelper.getSubjectDao().getSubject(note.getSubject_id_fk()).get(0);
+            if(!audio_path.equals("")){
+
+                share_frame.setVisibility(View.VISIBLE);
+                share_layout.setVisibility(View.VISIBLE);
+                record_path.setVisibility(View.VISIBLE);
+                deal_txt.setVisibility(View.GONE);
+                record_path.setText(note.getNote_audio());
+
+            }
+            SubjectPojo sub = databaseHelper.getSubjectInterface().getSubject(note.getSubject_id_fk()).get(0);
             subject.setText(sub.getSubject_name());
             selectedSubject = sub;
 
@@ -269,9 +284,14 @@ public class NewView_noteActivity extends AppCompatActivity {
             share_frame.setVisibility(View.VISIBLE);
             deal_icon.setVisibility(View.GONE);
             deal_txt.setVisibility(View.GONE);
+            record_path.setVisibility(View.GONE);
         }
         else if(reqCode == 112 && resultCode == RESULT_OK){
             pathAudio = data.getStringExtra("audio");
+            record_path.setVisibility(View.VISIBLE);
+            share_frame.setVisibility(View.GONE);
+            record_path.setText(pathAudio);
+
         }
         else if(reqCode == GALLERY_REQUEST && resultCode == RESULT_OK){
 
@@ -280,6 +300,8 @@ public class NewView_noteActivity extends AppCompatActivity {
                 image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 share_pic.setImageBitmap(image);
                 share_frame.setVisibility(View.VISIBLE);
+                record_path.setVisibility(View.GONE);
+
 
                 deal_icon.setVisibility(View.GONE);
                 deal_txt.setVisibility(View.GONE);
@@ -293,7 +315,7 @@ public class NewView_noteActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 int subjectID = data.getIntExtra("data",-1);
                 if(subjectID != -1){
-                    for (SubjectPojo sub: databaseHelper.getSubjectDao().getAll()) {
+                    for (SubjectPojo sub: databaseHelper.getSubjectInterface().getAll()) {
                         if(sub.getSubject_id() == subjectID){
                             selectedSubject = sub;
                             subject.setText(sub.getSubject_name());

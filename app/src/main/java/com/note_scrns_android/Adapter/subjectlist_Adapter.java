@@ -1,6 +1,7 @@
 package com.note_scrns_android.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public abstract class subjectlist_Adapter extends RecyclerView.Adapter<subjectli
                 deleteSubject(position);
             }
         });
+        Log.e("@#@#","get name"+list.get(position).getSubject_name());
         holder.subject.setText(list.get(position).getSubject_name());
     }
 

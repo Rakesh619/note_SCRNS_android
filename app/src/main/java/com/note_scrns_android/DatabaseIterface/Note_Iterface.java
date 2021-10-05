@@ -1,4 +1,4 @@
-package com.note_scrns_android.DatabaseInterface;
+package com.note_scrns_android.DatabaseIterface;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,41 +6,41 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.Notes;
 
 import java.util.List;
 @Dao
-public interface Note_Interface {
+public interface Note_Iterface {
 
-    @Query("SELECT * FROM NotesPojo ")
-    List<NotesPojo> getAll();
+    @Query("SELECT * FROM Notes ")
+    List<Notes> getAll();
 
     /*
      * Insert the object in database
      * @param note, object to be inserted
      */
     @Insert
-    void insert(NotesPojo note);
+    void insert(Notes note);
 
     /*
      * update the object in database
      * @param note, object to be updated
      */
     @Update
-    void update(NotesPojo repos);
+    void update(Notes repos);
 
     /*
      * delete the object from database
      * @param note, object to be deleted
      */
     @Delete
-    void delete(NotesPojo note);
+    void delete(Notes note);
 
     /*
      * delete list of objects from database
      * @param note, array of objects to be deleted
      */
     @Delete
-    void delete(NotesPojo... note);      // Note... is varargs, here note is an array
+    void delete(Notes... note);      // Note... is varargs, here note is an array
 
 }

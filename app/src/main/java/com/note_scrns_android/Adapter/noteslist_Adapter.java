@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.note_scrns_android.MapActivity;
-import com.note_scrns_android.Models.NotesPojo;
+import com.note_scrns_android.Models.Notes;
 import com.note_scrns_android.Models.SubjectPojo;
 import com.note_scrns_android.NewView_noteActivity;
 import com.note_scrns_android.R;
@@ -25,13 +25,13 @@ import java.util.List;
 
 public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_Adapter.ViewHolder> {
     Context context;
-    public List<NotesPojo> notes;
-    public List<SubjectPojo> subjects;
+    public List<Notes> notes;
+    public List<SubjectPojo> subjectpojo;
 
-    public noteslist_Adapter(Context context, List<NotesPojo> notes, List<SubjectPojo> subjects) {
+    public noteslist_Adapter(Context context, List<Notes> notes, List<SubjectPojo> subjects) {
         this.context = context;
         this.notes = notes;
-        this.subjects = subjects;
+        this.subjectpojo = subjects;
     }
 
     @NonNull
@@ -47,7 +47,7 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteAddress(position);
+                deletenote(position);
             }
         });
 
@@ -61,7 +61,7 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
         });
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
-        for(SubjectPojo sub:subjects){
+        for(SubjectPojo sub:subjectpojo){
             if(sub.getSubject_id() == notes.get(position).getSubject_id_fk()){
                 holder.txtSubjectItem.setText("Subject: "+sub.getSubject_name());
             }
@@ -115,5 +115,5 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
             context.startActivity(i);
         }
     }
-    public abstract void deleteAddress(int i);
+    public abstract void deletenote(int i);
 }

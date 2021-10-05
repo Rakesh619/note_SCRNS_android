@@ -8,12 +8,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.note_scrns_android.Adapter.subjectlist_Adapter;
 import com.note_scrns_android.Models.SubjectPojo;
@@ -29,7 +31,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_subject);
+        setContentView(R.layout.activity_notesubject);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
         new_note=(TextView)findViewById(R.id.new_note);
         txt_title=(TextView)findViewById(R.id.txt_title);
@@ -39,6 +41,9 @@ public class NotesSubjectActivity extends AppCompatActivity {
         drawer_txt.setText("Back");
         new_note.setText("New");
         txt_title.setText("Subjects");
+        list = DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll();
+        Log.e("@#@#@","get list"+list.size());
+
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,13 +70,18 @@ public class NotesSubjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //save item
-                        SubjectPojo subject =  new SubjectPojo(sub.getText().toString());
+                        if(sub.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(),"Please enter Subject",Toast.LENGTH_SHORT).show();
+                            alertDialog.dismiss();
+                        }else {
+                            SubjectPojo subject = new SubjectPojo(sub.getText().toString());
 
-                        DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().insert(subject);
-                        madapter.list.clear();
-                        madapter.list.addAll(DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().getAll());
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        alertDialog.dismiss();
+                            DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().insert(subject);
+                            madapter.list.clear();
+                            madapter.list.addAll(DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll());
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                            alertDialog.dismiss();
+                        }
                     }
                 });
                 cross.setOnClickListener(new View.OnClickListener() {
@@ -80,14 +90,15 @@ public class NotesSubjectActivity extends AppCompatActivity {
                         alertDialog.dismiss();
                     }
                 });
-
+            }
+        });
                 madapter = new subjectlist_Adapter(NotesSubjectActivity.this,list) {
                     @Override
                     public void deleteSubject(final int pos) {
 
                         final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
                         LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+                        View dialogView = inflater.inflate(R.layout.delete_dialog, null);
                         mainDialog.setView(dialogView);
 
                         final Button cancel = (Button) dialogView.findViewById(R.id.cancel);
@@ -110,7 +121,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 //delete item
-                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().delete( list.get(pos));
+                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().delete( list.get(pos));
                                 list.remove(pos);
                                 recyclerView.getAdapter().notifyDataSetChanged();
                                 alertDialog.dismiss();
@@ -146,7 +157,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
                                 //save item
                                 SubjectPojo subject =  list.get(i);
                                 subject.setSubject_name(sub.getText().toString());
-                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectDao().update(subject);
+                                DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().update(subject);
                                 alertDialog.dismiss();
                             }
                         });
@@ -171,7 +182,6 @@ public class NotesSubjectActivity extends AppCompatActivity {
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(madapter);
 
-            }
-        });
+
     }
 }
