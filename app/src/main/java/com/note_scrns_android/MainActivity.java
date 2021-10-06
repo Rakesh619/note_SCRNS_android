@@ -2,6 +2,7 @@ package com.note_scrns_android;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,8 @@ import com.note_scrns_android.Adapter.noteslist_Adapter;
 import com.note_scrns_android.Models.Notes;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,10 +75,40 @@ public class MainActivity extends AppCompatActivity {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(), NewView_noteActivity.class);
-                i.putExtra("from","new");
-                startActivity(i);
+
+                PopupMenu popup = new PopupMenu(MainActivity.this, new_note);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if(item.getTitle().equals("Add")){
+
+                            Intent i=new Intent(getApplicationContext(), NewView_noteActivity.class);
+                            i.putExtra("from","new");
+                            startActivity(i);
+
+                        }else {
+                            Collections.sort(listNotes, new Comparator<Notes>(){
+                                public int compare(Notes obj1, Notes obj2) {
+                                    // ## Ascending order
+                                    return obj1.getTitle().compareToIgnoreCase(obj2.getTitle()); // To compare string values
+                                    // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+
+                                }
+                            });
+                            recyclerView.getAdapter().notifyDataSetChanged();
+
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             }
+
+//            }
         });
 
         search.addTextChangedListener(new TextWatcher() {
@@ -151,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
                 temp.add(n);
             }
         }
-        notesAdapter.notes = temp;
-        recyclerView.getAdapter().notifyDataSetChanged();
+        notesAdapter.updateList(temp);
+//        notesAdapter.notes = temp;
+//        recyclerView.getAdapter().notifyDataSetChanged();
     }
 }

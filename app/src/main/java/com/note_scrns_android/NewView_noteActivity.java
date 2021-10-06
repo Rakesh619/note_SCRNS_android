@@ -205,7 +205,7 @@ public class NewView_noteActivity extends AppCompatActivity {
                 record_path.setVisibility(View.GONE);
                 deal_txt.setVisibility(View.GONE);
             }
-            if(!audio_path.equals("")){
+            if(audio_path!=null){
 
                 share_frame.setVisibility(View.VISIBLE);
                 share_layout.setVisibility(View.VISIBLE);

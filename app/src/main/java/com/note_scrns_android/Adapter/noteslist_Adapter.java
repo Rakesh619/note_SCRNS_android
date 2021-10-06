@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,10 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        int pos=holder.getAdapterPosition();
+        Log.e("@#@#","get posi"+position);
+
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +119,11 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
             i.putExtra("selectedIndex",getAdapterPosition());
             context.startActivity(i);
         }
+    }
+
+    public void updateList(List<Notes> list){
+        notes = list;
+        notifyDataSetChanged();
     }
     public abstract void deletenote(int i);
 }
