@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +23,9 @@ import java.io.IOException;
 import java.util.Date;
 
 public class RecorderAudioActivity extends AppCompatActivity {
-    TextView drawer_txt,new_note,txt_title;
+    TextView drawer_txt,txt_title;
     Button record,play,stop,choose;
+    ImageView new_note;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
     public String path;
@@ -42,11 +44,11 @@ public class RecorderAudioActivity extends AppCompatActivity {
         stop = (Button) findViewById(R.id.audioStop);
         choose = (Button) findViewById(R.id.audioSelect);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(TextView)findViewById(R.id.new_note);
+        new_note=(ImageView)findViewById(R.id.new_note);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         new_note.setVisibility(View.VISIBLE);
-        new_note.setText("Save");
+        new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
         txt_title=(TextView)findViewById(R.id.txt_title);
         txt_title.setText("Recorder");
         path=  "";

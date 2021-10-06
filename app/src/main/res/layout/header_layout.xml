@@ -41,15 +41,13 @@
             android:layout_height="@dimen/view_45" />
 
 
-        <TextView
+        <ImageView
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:padding="@dimen/view_10"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="Add"
-            android:textColor="@color/white"
-            android:textSize="@dimen/txt_14"
+            android:src="@drawable/ic_baseline_more_vert_24"
             android:id="@+id/new_note"
             android:gravity="center"
             android:layout_height="@dimen/view_50" />

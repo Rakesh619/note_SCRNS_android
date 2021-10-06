@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,7 +23,8 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    TextView drawer_txt,new_note,txt_title;
+    TextView drawer_txt,txt_title;
+    ImageView new_note;
     double lat,longi;
     Notes note;
     SubjectPojo sub;
@@ -36,7 +38,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(TextView)findViewById(R.id.new_note);
+        new_note=(ImageView)findViewById(R.id.new_note);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         new_note.setVisibility(View.GONE);

@@ -23,7 +23,8 @@ import com.note_scrns_android.Models.SubjectPojo;
 import java.util.List;
 
 public class NotesSubjectActivity extends AppCompatActivity {
-    TextView drawer_txt,new_note,txt_title;
+    TextView drawer_txt,txt_title;
+    ImageView new_note;
     RecyclerView recyclerView;
     subjectlist_Adapter madapter;
     List<SubjectPojo> list;
@@ -33,13 +34,13 @@ public class NotesSubjectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notesubject);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(TextView)findViewById(R.id.new_note);
+        new_note=(ImageView)findViewById(R.id.new_note);
         txt_title=(TextView)findViewById(R.id.txt_title);
 
         recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
-        new_note.setText("New");
+        new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_create_new_folder_24));
         txt_title.setText("Subjects");
         list = DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll();
         Log.e("@#@#@","get list"+list.size());

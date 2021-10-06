@@ -1,5 +1,6 @@
 package com.note_scrns_android;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    TextView drawer_txt,new_note,txt_title;
+    TextView drawer_txt,txt_title;
+    ImageView new_note;
     ImageView search_icon;
     EditText search;
     RecyclerView recyclerView;
@@ -38,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout itemlayout;
     RelativeLayout no_note;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
         txt_title=(TextView)findViewById(R.id.txt_title);
-        new_note=(TextView)findViewById(R.id.new_note);
+        new_note=(ImageView)findViewById(R.id.new_note);
         recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
         itemlayout=(LinearLayout) findViewById(R.id.item_layout);
         no_note=(RelativeLayout) findViewById(R.id.no_notes);
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         search_icon=(ImageView) findViewById(R.id.search_icon);
 
         drawer_txt.setVisibility(View.GONE);
-        new_note.setText("Add");
+        new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_more_vert_24));
         txt_title.setText("All Notes");
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();

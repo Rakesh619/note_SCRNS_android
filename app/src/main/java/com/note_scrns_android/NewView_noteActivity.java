@@ -39,7 +39,8 @@ public class NewView_noteActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST = 102;
     private static final int GALLERY_REQUEST = 101;
-    TextView drawer_txt,new_note,txt_title,deal_txt;
+    TextView drawer_txt,txt_title,deal_txt;
+    ImageView new_note;
     EditText title,description;
     Button record,subject;
     RelativeLayout share_layout;
@@ -63,7 +64,7 @@ public class NewView_noteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(TextView)findViewById(R.id.new_note);
+        new_note=(ImageView)findViewById(R.id.new_note);
         title=(EditText) findViewById(R.id.new_title);
         txt_title=(TextView)findViewById(R.id.txt_title);
         deal_txt=(TextView)findViewById(R.id.deal_txt);
@@ -87,7 +88,7 @@ public class NewView_noteActivity extends AppCompatActivity {
 
         if(from.equalsIgnoreCase("new")){
             txt_title.setText("New Note");
-            new_note.setText("Save");
+            new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationListener = new LocationListener() {
                 @Override
@@ -118,7 +119,7 @@ public class NewView_noteActivity extends AppCompatActivity {
 
         }else {
             txt_title.setText("Update Note");
-            new_note.setText("Update");
+            new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
             getAndSetNotes();
 
 
