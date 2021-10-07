@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(i);
 
                         }else {
+                            //sorting functionality
                             Collections.sort(listNotes, new Comparator<Notes>(){
                                 public int compare(Notes obj1, Notes obj2) {
                                     // ## Ascending order
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
 //            }
         });
-
+        //search filter
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(notesAdapter);
     }
+    //Searching particular note with alphabets
     private void search_note(String text) {
         listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();
         List<Notes> temp = new ArrayList();

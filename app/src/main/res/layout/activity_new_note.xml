@@ -104,13 +104,15 @@
 
             </FrameLayout>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edittext_bg"
+                android:background="@drawable/button_bg"
                 android:layout_margin="@dimen/txt_20"
                 android:id="@+id/record_path"
                 android:padding="@dimen/view_5"
+                android:text="Listen Audio"
+                android:textColor="@color/white"
                 android:visibility="visible"/>
 
             <androidx.appcompat.widget.AppCompatButton

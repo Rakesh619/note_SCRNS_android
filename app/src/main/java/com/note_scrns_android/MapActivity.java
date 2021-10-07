@@ -52,7 +52,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        Intent i = new Intent();
         List<Notes> notes = DatabaseHelper.getInstance(getApplicationContext()).getNoteInterface().getAll();
         int index = getIntent().getIntExtra("selectedIndex",-1);
         if (index != -1){
@@ -71,11 +70,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
 
         mMap = googleMap;
-        LatLng sydney = new LatLng(lat, longi);
-        MarkerOptions options = new MarkerOptions().position(sydney)
+        LatLng xyz = new LatLng(lat, longi);
+        MarkerOptions options = new MarkerOptions().position(xyz)
                 .title(note.getTitle())
                 .snippet("Desc: " + note.getDescription()+" Subject: "+sub.getSubject_name() + " Date Created: "+dateString);
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(xyz));
     }
 }

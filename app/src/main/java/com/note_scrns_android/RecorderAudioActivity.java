@@ -28,7 +28,7 @@ public class RecorderAudioActivity extends AppCompatActivity {
     ImageView new_note;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
-    public String path;
+    public String path,from="",audio_path="";
     MediaRecorder rec = new MediaRecorder();
     MediaPlayer mp = new MediaPlayer();
 
@@ -59,6 +59,18 @@ public class RecorderAudioActivity extends AppCompatActivity {
                 finish();
             }
         });
+        Intent i=getIntent();
+        from=i.getStringExtra("from");
+        audio_path=i.getStringExtra("path");
+
+        if(from.equalsIgnoreCase("new")){
+            choose.setVisibility(View.VISIBLE);
+            record.setVisibility(View.VISIBLE);
+        }else {
+            choose.setVisibility(View.GONE);
+            record.setVisibility(View.GONE);
+
+        }
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,19 +83,31 @@ public class RecorderAudioActivity extends AppCompatActivity {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                //Subjects subject =  list.get(i);
-                intent.putExtra("audio", path);
-                setResult(RESULT_OK, intent);
-                finish();
+                if(from.equalsIgnoreCase("new")) {
+                    Intent intent = new Intent();
+                    //Subjects subject =  list.get(i);
+                    intent.putExtra("audio", path);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }else {
+                    Intent intent = new Intent();
+                    //Subjects subject =  list.get(i);
+                    intent.putExtra("audio", audio_path);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }
         });
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
+                    if(from.equalsIgnoreCase("new")) {
+                        playOrStopRecording(path);
+                    }else {
+                        playOrStopRecording(audio_path);
 
-                    playOrStopRecording(path);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

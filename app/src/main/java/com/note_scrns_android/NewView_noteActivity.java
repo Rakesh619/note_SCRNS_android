@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,12 +52,12 @@ public class NewView_noteActivity extends AppCompatActivity {
     String pathAudio;
     Bitmap image;
     Location userlocation;
-    String from="";
+    String from="",audio_path;
     LocationManager locationManager;
     LocationListener locationListener;
     DatabaseHelper databaseHelper;
     SubjectPojo selectedSubject;
-    TextView record_path;
+    Button record_path;
 
 
     @Override
@@ -74,7 +75,7 @@ public class NewView_noteActivity extends AppCompatActivity {
         share_layout=(RelativeLayout) findViewById(R.id.share_layout);
         share_pic=(ImageView) findViewById(R.id.share_pic);
         share_frame=(FrameLayout) findViewById(R.id.share_frame);
-        record_path=(TextView)findViewById(R.id.record_path);
+        record_path=(Button) findViewById(R.id.record_path);
 
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
@@ -120,10 +121,20 @@ public class NewView_noteActivity extends AppCompatActivity {
         }else {
             txt_title.setText("Update Note");
             new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
-            getAndSetNotes();
+            getUpdatedNotes();
+
 
 
         }
+        record_path.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),RecorderAudioActivity.class);
+                i.putExtra("from","update");
+                i.putExtra("path",audio_path);
+                startActivityForResult(i,112);
+            }
+        });
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,10 +143,11 @@ public class NewView_noteActivity extends AppCompatActivity {
             }
         });
 
-        share_layout.setOnClickListener(new View.OnClickListener() {
+        subject.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                selectImage();
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(), NotesSubjectActivity.class);
+                startActivityForResult(i, 11);
             }
         });
 
@@ -163,10 +175,12 @@ public class NewView_noteActivity extends AppCompatActivity {
                             Notes note = notes.get(index);
                             note.setTitle(title.getText().toString());
                             note.setDescription(description.getText().toString());
-                            note.setNote_audio(pathAudio);
                             note.setSubject_id_fk(selectedSubject.getSubject_id());
                             if(image != null){
                                 note.setNote_image(ImageConverter.convertImage2ByteArray(image));
+                            }if(pathAudio!=null){
+                                note.setNote_audio(pathAudio);
+
                             }
                             databaseHelper.getNoteInterface().update(note);
                         }
@@ -177,17 +191,16 @@ public class NewView_noteActivity extends AppCompatActivity {
             }
         });
 
-        subject.setOnClickListener(new View.OnClickListener() {
+        share_layout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(), NotesSubjectActivity.class);
-                startActivityForResult(i, 11);
+            public void onClick(View v) {
+                selectImage();
             }
         });
     }
 
 
-    private void getAndSetNotes() {
+    private void getUpdatedNotes() {
         List<Notes> notes = databaseHelper.getNoteInterface().getAll();
         int index = getIntent().getIntExtra("selectedIndex", -1);
         if (index != -1) {
@@ -195,7 +208,8 @@ public class NewView_noteActivity extends AppCompatActivity {
             title.setText(note.getTitle());
             description.setText(note.getDescription());
             byte[] data = note.getNote_image();
-            String audio_path=note.getNote_audio();
+             audio_path=note.getNote_audio();
+            Log.e("@#@#","get path"+audio_path);
             if (data != null) {
                 image = ImageConverter.convertByteArray2Bitmap(data);
                 share_pic.setImageBitmap(image);
@@ -211,7 +225,7 @@ public class NewView_noteActivity extends AppCompatActivity {
                 share_layout.setVisibility(View.VISIBLE);
                 record_path.setVisibility(View.VISIBLE);
                 deal_txt.setVisibility(View.GONE);
-                record_path.setText(note.getNote_audio());
+
 
             }
             SubjectPojo sub = databaseHelper.getSubjectInterface().getSubject(note.getSubject_id_fk()).get(0);
@@ -291,7 +305,8 @@ public class NewView_noteActivity extends AppCompatActivity {
             pathAudio = data.getStringExtra("audio");
             record_path.setVisibility(View.VISIBLE);
             share_frame.setVisibility(View.GONE);
-            record_path.setText(pathAudio);
+           audio_path=pathAudio;
+
 
         }
         else if(reqCode == GALLERY_REQUEST && resultCode == RESULT_OK){
@@ -347,7 +362,10 @@ public class NewView_noteActivity extends AppCompatActivity {
                 } else if (items[item].equals("Choose from Library")) {
                     OpenGallery();
                 } else if(items[item].equals("Record Audio")){
-                    Intent i=new Intent(getApplicationContext(), RecorderAudioActivity.class);
+
+                    Intent i=new Intent(getApplicationContext(),RecorderAudioActivity.class);
+                    i.putExtra("from","new");
+                    i.putExtra("path","");
                     startActivityForResult(i,112);
                 }
                 else if(items[item].equals("Cancel")){
