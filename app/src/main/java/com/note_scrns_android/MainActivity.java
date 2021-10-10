@@ -2,7 +2,9 @@ package com.note_scrns_android;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,26 +26,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.note_scrns_android.Adapter.noteslist_Adapter;
 import com.note_scrns_android.Models.Notes;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    TextView drawer_txt,txt_title;
-    ImageView new_note;
+
     ImageView search_icon;
     EditText search;
-    RecyclerView recyclerView;
-    noteslist_Adapter notesAdapter;
-    DatabaseHelper databaseHelper;
+    TextView drawer_txt,txt_title;
+    ImageView new_note;
     List<Notes> listNotes;
     LinearLayout itemlayout;
     RelativeLayout no_note;
+    RecyclerView recyclerView;
+    noteslist_Adapter notesAdapter;
+    DatabaseHelper databaseHelper;
+    Boolean isSortTitleAc = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -59,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
         search=(EditText) findViewById(R.id.search_txt);
         search_icon=(ImageView) findViewById(R.id.search_icon);
 
-        drawer_txt.setVisibility(View.GONE);
-        new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_more_vert_24));
-        txt_title.setText("All Notes");
+        drawer_txt.setVisibility(View.VISIBLE);
+        drawer_txt.setText("Sort");
+        new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_create_new_folder_24));
+        txt_title.setText("Notes");
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();
         if(listNotes.size()==0){
@@ -72,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
             itemlayout.setVisibility(View.VISIBLE);
         }
 
-        new_note.setOnClickListener(new View.OnClickListener() {
+        drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                PopupMenu popup = new PopupMenu(MainActivity.this, new_note);
+                PopupMenu popup = new PopupMenu(MainActivity.this, drawer_txt);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
 
@@ -84,22 +92,47 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
-                        if(item.getTitle().equals("Add")){
+                        if(item.getTitle().equals("Date")){
 
-                            Intent i=new Intent(getApplicationContext(), NewView_noteActivity.class);
-                            i.putExtra("from","new");
-                            startActivity(i);
-
-                        }else {
-                            //sorting functionality
                             Collections.sort(listNotes, new Comparator<Notes>(){
+                                DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+
                                 public int compare(Notes obj1, Notes obj2) {
-                                    // ## Ascending order
-                                    return obj1.getTitle().compareToIgnoreCase(obj2.getTitle()); // To compare string values
-                                    // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+                                    // ## Sorting Datewise order
+                                    return Long.toString(obj1.getCreated()).compareTo(Long.toString(obj2.getCreated()));
+
 
                                 }
                             });
+
+                        }else {
+                            //sorting functionality
+                            if(isSortTitleAc){
+                                isSortTitleAc = false;
+                                Toast.makeText(getApplicationContext(),"Descending Order",Toast.LENGTH_SHORT).show();
+                                Collections.sort(listNotes, new Comparator<Notes>(){
+                                    public int compare(Notes obj1, Notes obj2) {
+                                        // ## Descending order
+                                        return obj2.getTitle().compareToIgnoreCase(obj1.getTitle()); // To compare string values
+                                        // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+
+                                    }
+                                });
+                            }
+                            else{
+                                isSortTitleAc = true;
+                                Toast.makeText(getApplicationContext(),"Ascending Order",Toast.LENGTH_SHORT).show();
+
+                                Collections.sort(listNotes, new Comparator<Notes>(){
+                                    public int compare(Notes obj1, Notes obj2) {
+                                        // ## Ascending order
+                                        return obj1.getTitle().compareToIgnoreCase(obj2.getTitle()); // To compare string values
+                                        // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+
+                                    }
+                                });
+                            }
+
                             recyclerView.getAdapter().notifyDataSetChanged();
 
                         }
@@ -108,8 +141,16 @@ public class MainActivity extends AppCompatActivity {
                 });
                 popup.show();
             }
-
 //            }
+        });
+
+        new_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),NewView_noteActivity.class);
+                i.putExtra("from","new");
+                startActivity(i);
+            }
         });
         //search filter
         search.addTextChangedListener(new TextWatcher() {
@@ -172,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(mLayoutManager);
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);

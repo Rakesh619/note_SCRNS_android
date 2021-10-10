@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layoutDirection="rtl"
+    android:layout_gravity="end">
     <item
-        android:id="@+id/add"
-        android:title="Add" />
+        android:id="@+id/alphabet"
+        android:title="Alphabet" />
     <item
-        android:id="@+id/sort"
-        android:title="Sort"/>
+        android:id="@+id/date"
+        android:title="Date"/>
 
 </menu>

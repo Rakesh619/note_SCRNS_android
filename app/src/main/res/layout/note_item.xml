@@ -32,7 +32,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/delete"
+                android:src="@drawable/cross_blue"
                 android:id="@+id/delete"
                 android:padding="@dimen/view_5"
                 android:layout_alignParentRight="true"/>
@@ -51,15 +51,28 @@
             android:layout_height="wrap_content"
             >
 
+            <ImageView
+                android:id="@+id/note_image"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/content_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
             <LinearLayout
                 android:id="@+id/content_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/note_image"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/note_image">
 
 
                 <TextView
@@ -88,11 +101,10 @@
 
                 <TextView
                     android:id="@+id/txtSubjectItem"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
                     android:paddingLeft="@dimen/view_5"
                     android:text="Subject"
                     android:textColor="@android:color/black"
@@ -101,18 +113,7 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/note_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentRight="true"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/content_layout"
-                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

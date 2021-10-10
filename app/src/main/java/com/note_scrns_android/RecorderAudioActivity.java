@@ -66,9 +66,11 @@ public class RecorderAudioActivity extends AppCompatActivity {
         if(from.equalsIgnoreCase("new")){
             choose.setVisibility(View.VISIBLE);
             record.setVisibility(View.VISIBLE);
+            new_note.setVisibility(View.VISIBLE);
         }else {
             choose.setVisibility(View.GONE);
             record.setVisibility(View.GONE);
+            new_note.setVisibility(View.GONE);
 
         }
         choose.setOnClickListener(new View.OnClickListener() {

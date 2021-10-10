@@ -94,6 +94,7 @@ public class NewView_noteActivity extends AppCompatActivity {
             locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+
                     userlocation = location;
                 }
 
