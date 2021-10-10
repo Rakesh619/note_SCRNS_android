@@ -68,7 +68,7 @@ public abstract class noteslist_Adapter extends RecyclerView.Adapter<noteslist_A
         holder.description.setText(notes.get(position).getDescription());
         for(SubjectPojo sub:subjectpojo){
             if(sub.getSubject_id() == notes.get(position).getSubject_id_fk()){
-                holder.txtSubjectItem.setText("Subject: "+sub.getSubject_name());
+                holder.txtSubjectItem.setText(sub.getSubject_name());
             }
         }
 

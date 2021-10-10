@@ -73,7 +73,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LatLng xyz = new LatLng(lat, longi);
         MarkerOptions options = new MarkerOptions().position(xyz)
                 .title(note.getTitle())
-                .snippet("Desc: " + note.getDescription()+" Subject: "+sub.getSubject_name() + " Date Created: "+dateString);
+                .snippet("Desc - " + note.getDescription()+" Sub - "+sub.getSubject_name() + " Date - "+dateString);
         mMap.addMarker(options);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(xyz));
     }

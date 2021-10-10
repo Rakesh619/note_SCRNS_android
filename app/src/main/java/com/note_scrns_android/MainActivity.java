@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     noteslist_Adapter notesAdapter;
     DatabaseHelper databaseHelper;
     Boolean isSortTitleAc = false;
+    Boolean isSortDateAc = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -94,16 +95,33 @@ public class MainActivity extends AppCompatActivity {
 
                         if(item.getTitle().equals("Date")){
 
-                            Collections.sort(listNotes, new Comparator<Notes>(){
-                                DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+                            if(isSortDateAc) {
+                                isSortDateAc = false;
+                                Collections.sort(listNotes, new Comparator<Notes>(){
+                                    DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
 
-                                public int compare(Notes obj1, Notes obj2) {
-                                    // ## Sorting Datewise order
-                                    return Long.toString(obj1.getCreated()).compareTo(Long.toString(obj2.getCreated()));
+                                    public int compare(Notes obj1, Notes obj2) {
+                                        // ## Sorting Datewise order
+                                        if(obj1.getCreated() > obj2.getCreated()) return 1;
+                                        else if(obj1.getCreated() < obj2.getCreated()) return -1;
+                                        else return 0;
+                                    }
+                                });
 
+                            }
+                            else{
+                                isSortDateAc = true;
+                                Collections.sort(listNotes, new Comparator<Notes>(){
+                                    DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
 
-                                }
-                            });
+                                    public int compare(Notes obj1, Notes obj2) {
+                                        // ## Sorting Datewise order
+                                        if(obj1.getCreated() < obj2.getCreated()) return 1;
+                                        else if(obj1.getCreated() > obj2.getCreated()) return -1;
+                                        else return 0;
+                                    }
+                                });
+                            }
 
                         }else {
                             //sorting functionality
@@ -133,9 +151,10 @@ public class MainActivity extends AppCompatActivity {
                                 });
                             }
 
-                            recyclerView.getAdapter().notifyDataSetChanged();
+
 
                         }
+                        recyclerView.getAdapter().notifyDataSetChanged();
                         return true;
                     }
                 });

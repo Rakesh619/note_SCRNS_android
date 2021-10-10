@@ -160,7 +160,6 @@ public class NewView_noteActivity extends AppCompatActivity {
                     if (CheckValidation()) {
                         Notes note;
                         if (image != null) {
-
                             note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
                         } else {
                             note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
