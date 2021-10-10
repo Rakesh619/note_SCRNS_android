@@ -93,10 +93,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
-                        if(item.getTitle().equals("Date")){
+                        if(item.getTitle().equals("By Date")){
 
                             if(isSortDateAc) {
                                 isSortDateAc = false;
+                                Toast.makeText(getApplicationContext(),"Descending Order Date",Toast.LENGTH_SHORT).show();
                                 Collections.sort(listNotes, new Comparator<Notes>(){
                                     DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else{
                                 isSortDateAc = true;
+                                Toast.makeText(getApplicationContext(),"Ascending Order Date",Toast.LENGTH_SHORT).show();
                                 Collections.sort(listNotes, new Comparator<Notes>(){
                                     DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
 

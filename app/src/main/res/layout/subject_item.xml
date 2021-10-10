@@ -34,7 +34,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/delete"
+                android:src="@drawable/cross_blue"
                 android:id="@+id/sub_delete"
                 android:padding="@dimen/view_5"
                 android:layout_alignParentRight="true"/>

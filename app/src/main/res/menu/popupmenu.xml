@@ -4,9 +4,9 @@
     android:layout_gravity="end">
     <item
         android:id="@+id/alphabet"
-        android:title="Alphabet" />
+        android:title="By Title" />
     <item
         android:id="@+id/date"
-        android:title="Date"/>
+        android:title="By Date"/>
 
 </menu>

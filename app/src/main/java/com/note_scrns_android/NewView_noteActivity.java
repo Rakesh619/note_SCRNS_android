@@ -332,18 +332,15 @@ public class NewView_noteActivity extends AppCompatActivity {
 
     public void gallery() {
 
-        final CharSequence[] items = { "Take Photo", "Choose from Library","Record Audio","Cancel" };
+        final CharSequence[] items = { "Camera", "Gallery","Record Audio","Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose Your Option");
+        builder.setTitle("Select Attachment");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                //  boolean result= Utility.checkPermission(ShareDeal.this);
-
-                if (items[item].equals("Take Photo")) {
-
+                if (items[item].equals("Camera")) {
                     CaptureImage();
-                } else if (items[item].equals("Choose from Library")) {
+                } else if (items[item].equals("Gallery")) {
                     OpenGallery();
                 } else if(items[item].equals("Record Audio")){
 

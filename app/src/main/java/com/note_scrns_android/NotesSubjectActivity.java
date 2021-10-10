@@ -1,6 +1,7 @@
 package com.note_scrns_android;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +44,6 @@ public class NotesSubjectActivity extends AppCompatActivity {
         new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_create_new_folder_24));
         txt_title.setText("Subjects");
         list = DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll();
-        Log.e("@#@#@","get list"+list.size());
 
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,7 +179,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
                         finish();
                     }
                 };
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(madapter);
 
