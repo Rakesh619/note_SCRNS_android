@@ -42,11 +42,10 @@ public class NewView_noteActivity extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 101;
     TextView drawer_txt,txt_title,deal_txt;
     ImageView new_note;
+    ImageView attach;
     EditText title,description;
     Button record,subject;
-    RelativeLayout share_layout;
-    ImageView share_pic,deal_icon;
-    FrameLayout share_frame;
+    ImageView share_pic;
     String path;
     private static final int REQUEST_CODE = 1;
     String pathAudio;
@@ -66,21 +65,17 @@ public class NewView_noteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_note);
         drawer_txt=(TextView)findViewById(R.id.drawer_icon);
         new_note=(ImageView)findViewById(R.id.new_note);
+        attach=(ImageView)findViewById(R.id.attachment);
         title=(EditText) findViewById(R.id.new_title);
         txt_title=(TextView)findViewById(R.id.txt_title);
-        deal_txt=(TextView)findViewById(R.id.deal_txt);
-        deal_icon=(ImageView) findViewById(R.id.deal_icon);
         description=(EditText) findViewById(R.id.description);
         subject=(Button) findViewById(R.id.select_subject);
-        share_layout=(RelativeLayout) findViewById(R.id.share_layout);
         share_pic=(ImageView) findViewById(R.id.share_pic);
-        share_frame=(FrameLayout) findViewById(R.id.share_frame);
         record_path=(Button) findViewById(R.id.record_path);
 
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
-        share_frame.setVisibility(View.VISIBLE);
-        share_layout.setVisibility(View.VISIBLE);
+        attach.setVisibility(View.VISIBLE);
         record_path.setVisibility(View.GONE);
         databaseHelper = DatabaseHelper.getInstance(NewView_noteActivity.this);
 
@@ -88,6 +83,8 @@ public class NewView_noteActivity extends AppCompatActivity {
         from=i.getStringExtra("from");
 
         if(from.equalsIgnoreCase("new")){
+            share_pic.setVisibility(View.GONE);
+
             txt_title.setText("New Note");
             new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -151,6 +148,12 @@ public class NewView_noteActivity extends AppCompatActivity {
                 startActivityForResult(i, 11);
             }
         });
+        attach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gallery();
+            }
+        });
 
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,12 +194,7 @@ public class NewView_noteActivity extends AppCompatActivity {
             }
         });
 
-        share_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
+
     }
 
 
@@ -214,19 +212,10 @@ public class NewView_noteActivity extends AppCompatActivity {
                 image = ImageConverter.convertByteArray2Bitmap(data);
                 share_pic.setImageBitmap(image);
                 share_pic.setVisibility(View.VISIBLE);
-                share_frame.setVisibility(View.VISIBLE);
-               share_layout.setVisibility(View.VISIBLE);
                 record_path.setVisibility(View.GONE);
-                deal_txt.setVisibility(View.GONE);
             }
             if(audio_path!=null){
-
-                share_frame.setVisibility(View.VISIBLE);
-                share_layout.setVisibility(View.VISIBLE);
                 record_path.setVisibility(View.VISIBLE);
-                deal_txt.setVisibility(View.GONE);
-
-
             }
             SubjectPojo sub = databaseHelper.getSubjectInterface().getSubject(note.getSubject_id_fk()).get(0);
             subject.setText(sub.getSubject_name());
@@ -296,15 +285,13 @@ public class NewView_noteActivity extends AppCompatActivity {
         {
             image = (Bitmap) data.getExtras().get("data");
             share_pic.setImageBitmap(image);
-            share_frame.setVisibility(View.VISIBLE);
-            deal_icon.setVisibility(View.GONE);
+            share_pic.setVisibility(View.VISIBLE);
             deal_txt.setVisibility(View.GONE);
             record_path.setVisibility(View.GONE);
         }
         else if(reqCode == 112 && resultCode == RESULT_OK){
             pathAudio = data.getStringExtra("audio");
             record_path.setVisibility(View.VISIBLE);
-            share_frame.setVisibility(View.GONE);
            audio_path=pathAudio;
 
 
@@ -315,12 +302,9 @@ public class NewView_noteActivity extends AppCompatActivity {
             try {
                 image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 share_pic.setImageBitmap(image);
-                share_frame.setVisibility(View.VISIBLE);
+                share_pic.setVisibility(View.VISIBLE);
                 record_path.setVisibility(View.GONE);
 
-
-                deal_icon.setVisibility(View.GONE);
-                deal_txt.setVisibility(View.GONE);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();

@@ -13,8 +13,6 @@ import java.util.List;
 
 @Dao
 public interface Subject_Interface {
-    @Query("SELECT * FROM SubjectPojo ")
-    List<SubjectNotesPojo> loadSubjectsWithNotes();
 
     @Query("SELECT * FROM SubjectPojo ")
     List<SubjectPojo> getAll();

@@ -57,53 +57,17 @@
                 android:paddingRight="5dp"
                 android:paddingTop="15dp"/>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="40dp"
-                android:layout_marginLeft="40dp"
-                android:visibility="gone"
-                android:background="@drawable/edittext_bg"
-                android:id="@+id/share_frame"
-                android:layout_gravity="center">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="140dp"
                     android:padding="5dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:id="@+id/share_pic"
-
+                    android:visibility="visible"
                     android:layout_gravity="center"/>
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:id="@+id/share_layout"
-                    android:layout_gravity="center"
-                    android:layout_centerInParent="true">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="40dp"
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/camera_icon"
-                        android:visibility="visible"
-                        android:id="@+id/deal_icon"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/deal_icon"
-                        android:textColor="#8B8B8B"
-                        android:id="@+id/deal_txt"
-                        android:visibility="visible"
-                        android:text="Add Picture"/>
-
-                </RelativeLayout>
 
 
-            </FrameLayout>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
