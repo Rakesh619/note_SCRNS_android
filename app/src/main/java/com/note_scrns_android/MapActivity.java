@@ -73,16 +73,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        long millisecond = note.getCreated();
-        // or you already have long value of date, use this instead of milliseconds variable.
-        String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
-
         mMap = googleMap;
-        LatLng xyz = new LatLng(lat, longi);
-        MarkerOptions options = new MarkerOptions().position(xyz)
+        long millisecond = note.getCreated();
+        String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
+        LatLng loca = new LatLng(lat, longi);
+        MarkerOptions options = new MarkerOptions().position(loca)
                 .title(note.getTitle())
-                .snippet("Desc - " + note.getDescription()+" Sub - "+sub.getSubject_name() + " Date - "+dateString);
+                .snippet("Desc " + note.getDescription()+" Sub "+sub.getSubject_name() + " Date "+dateString);
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(xyz));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(loca));
     }
 }

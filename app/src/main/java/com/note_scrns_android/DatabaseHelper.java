@@ -17,23 +17,17 @@ import com.note_scrns_android.Models.SubjectPojo;
 public abstract class DatabaseHelper extends RoomDatabase {
     public abstract Note_Iterface getNoteInterface();
     public abstract Subject_Interface getSubjectInterface();
-    private static DatabaseHelper noteDB;
+    private static DatabaseHelper db;
     public static DatabaseHelper getInstance(Context context) {
-        if (null == noteDB) {
-            noteDB = buildDatabaseInstance(context);
+        if (null == db) {
+            db = buildDatabaseInstance(context);
         }
-        return noteDB;
+        return db;
     }
-
     private static DatabaseHelper buildDatabaseInstance(Context context) {
         return Room.databaseBuilder(context,
                 DatabaseHelper.class,
                 "NotesDB")
                 .allowMainThreadQueries().build();
     }
-
-    public void cleanUp(){
-        noteDB = null;
-    }
-
 }

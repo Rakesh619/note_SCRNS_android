@@ -223,9 +223,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-
-
-
                 }
                 recyclerView.getAdapter().notifyDataSetChanged();
                 return true;
@@ -240,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("from","new");
         startActivity(i);
     }
-    //Searching particular note with alphabets
+
     private void search_note(String text) {
         listNotes =  DatabaseHelper.getInstance(MainActivity.this).getNoteInterface().getAll();
         List<Notes> temp = new ArrayList();

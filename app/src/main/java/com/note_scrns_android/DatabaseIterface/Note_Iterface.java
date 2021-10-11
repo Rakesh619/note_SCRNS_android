@@ -26,6 +26,6 @@ public interface Note_Iterface {
 
 
     @Delete
-    void delete(Notes... note); 
+    void delete(Notes... note);
 
 }
