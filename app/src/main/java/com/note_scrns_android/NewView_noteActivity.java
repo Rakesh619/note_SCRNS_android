@@ -146,7 +146,8 @@ public class NewView_noteActivity extends AppCompatActivity {
                    note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
                }
                databaseHelper.getNoteInterface().insert(note);
-               drawer_txt.performClick();
+               Intent i=new Intent(getApplicationContext(),MainActivity.class);
+               startActivity(i);
            }
        }else {
            if(CheckValidation()) {
@@ -166,7 +167,8 @@ public class NewView_noteActivity extends AppCompatActivity {
                    databaseHelper.getNoteInterface().update(note);
                }
 
-               drawer_txt.performClick();
+               Intent i=new Intent(getApplicationContext(),MainActivity.class);
+               startActivity(i);
            }
        }
    }
