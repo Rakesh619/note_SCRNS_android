@@ -21,10 +21,20 @@ import com.note_scrns_android.Models.SubjectPojo;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    TextView drawer_txt,txt_title;
+    @BindView(R.id.new_note)
     ImageView new_note;
+
+    @BindView(R.id.drawer_icon)
+    TextView drawer_txt;
+
+    @BindView(R.id.txt_title)
+    TextView txt_title;
+
     double lat,longi;
     Notes note;
     SubjectPojo sub;
@@ -34,15 +44,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(ImageView)findViewById(R.id.new_note);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         new_note.setVisibility(View.GONE);
-        txt_title=(TextView)findViewById(R.id.txt_title);
         txt_title.setText("Note on Map");
         drawer_txt.setOnClickListener(new View.OnClickListener() {
             @Override

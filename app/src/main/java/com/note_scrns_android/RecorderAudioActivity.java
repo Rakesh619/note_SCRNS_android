@@ -22,10 +22,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class RecorderAudioActivity extends AppCompatActivity {
-    TextView drawer_txt,txt_title;
-    Button record,play,stop,choose;
+    @BindView(R.id.drawer_icon)
+    TextView drawer_txt;
+    @BindView(R.id.new_note)
     ImageView new_note;
+    @BindView(R.id.txt_title)
+    TextView txt_title;
+    @BindView(R.id.audioRecord)
+    Button record;
+    @BindView(R.id.audioPlay)
+    Button play;
+    @BindView(R.id.audioStop)
+    Button stop;
+    @BindView(R.id.audioSelect)
+    Button choose;
+
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
     public String path,from="",audio_path="";
@@ -39,12 +55,7 @@ public class RecorderAudioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder_audio);
-        record = (Button) findViewById(R.id.audioRecord);
-        play = (Button) findViewById(R.id.audioPlay);
-        stop = (Button) findViewById(R.id.audioStop);
-        choose = (Button) findViewById(R.id.audioSelect);
-        drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(ImageView)findViewById(R.id.new_note);
+        ButterKnife.bind(this);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         new_note.setVisibility(View.VISIBLE);
@@ -59,6 +70,7 @@ public class RecorderAudioActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         Intent i=getIntent();
         from=i.getStringExtra("from");
         audio_path=i.getStringExtra("path");
@@ -73,82 +85,75 @@ public class RecorderAudioActivity extends AppCompatActivity {
             new_note.setVisibility(View.GONE);
 
         }
-        choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent_upload = new Intent();
-                intent_upload.setType("audio/*");
-                intent_upload.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent_upload,1);
-            }
-        });
-        new_note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(from.equalsIgnoreCase("new")) {
-                    Intent intent = new Intent();
-                    //Subjects subject =  list.get(i);
-                    intent.putExtra("audio", path);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }else {
-                    Intent intent = new Intent();
-                    //Subjects subject =  list.get(i);
-                    intent.putExtra("audio", audio_path);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-            }
-        });
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if(from.equalsIgnoreCase("new")) {
-                        playOrStopRecording(path);
-                    }else {
-                        playOrStopRecording(audio_path);
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mp.isPlaying()){
-
-                    mp.stop();
-                }
-            }
-        });
-
         record.setTag("record");
-        record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(record.getTag() == "record"){
-                    try {
-                        start();
-                        record.setTag("stop");
-                        record.setText("Stop");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-                    }
 
-                }
-                else{
-                    stop();
-                    record.setText("Record");
-                    record.setTag("record");
-                }
+
+    }
+    @OnClick(R.id.new_note)
+    public void click(){
+        if(from.equalsIgnoreCase("new")) {
+            Intent intent = new Intent();
+            //Subjects subject =  list.get(i);
+            intent.putExtra("audio", path);
+            setResult(RESULT_OK, intent);
+            finish();
+        }else {
+            Intent intent = new Intent();
+            //Subjects subject =  list.get(i);
+            intent.putExtra("audio", audio_path);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    @OnClick(R.id.audioRecord)
+    public void Record(){
+        if(record.getTag() == "record"){
+            try {
+                start();
+                record.setTag("stop");
+                record.setText("Stop");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else{
+            stop();
+            record.setText("Record");
+            record.setTag("record");
+        }
+    }
+
+    @OnClick(R.id.audioSelect)
+    public void Select(){
+        Intent intent_upload = new Intent();
+        intent_upload.setType("audio/*");
+        intent_upload.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent_upload,1);
+    }
+
+    @OnClick(R.id.audioPlay)
+    public void Play(){
+        try {
+            if(from.equalsIgnoreCase("new")) {
+                playOrStopRecording(path);
+            }else {
+                playOrStopRecording(audio_path);
 
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @OnClick(R.id.audioStop)
+    public void stopaudio(){
+        if(mp.isPlaying()){
+
+            mp.stop();
+        }
     }
     public void playOrStopRecording(String path) throws IOException {
         if(mp.isPlaying()){

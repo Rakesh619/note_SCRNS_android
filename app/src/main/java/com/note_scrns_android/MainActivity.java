@@ -38,16 +38,29 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends AppCompatActivity {
 
-    ImageView search_icon;
-    EditText search;
-    TextView drawer_txt,txt_title;
+    @BindView(R.id.drawer_icon)
+    TextView drawer_txt;
+    @BindView(R.id.txt_title)
+    TextView txt_title;
+    @BindView(R.id.new_note)
     ImageView new_note;
-    List<Notes> listNotes;
-    LinearLayout itemlayout;
-    RelativeLayout no_note;
+    @BindView(R.id.note_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.item_layout)
+    LinearLayout  itemlayout;
+    @BindView(R.id.no_notes)
+    RelativeLayout no_note;
+    @BindView(R.id.search_txt)
+    EditText search;
+    @BindView(R.id.search_icon)
+    ImageView search_icon;
+    List<Notes> listNotes;
     noteslist_Adapter notesAdapter;
     DatabaseHelper databaseHelper;
     Boolean isSortTitleAc = false;
@@ -58,15 +71,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        txt_title=(TextView)findViewById(R.id.txt_title);
-        new_note=(ImageView)findViewById(R.id.new_note);
-        recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
-        itemlayout=(LinearLayout) findViewById(R.id.item_layout);
-        no_note=(RelativeLayout) findViewById(R.id.no_notes);
-        search=(EditText) findViewById(R.id.search_txt);
-        search_icon=(ImageView) findViewById(R.id.search_icon);
-
+        ButterKnife.bind(this);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Sort");
         new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_create_new_folder_24));
@@ -81,98 +86,6 @@ public class MainActivity extends AppCompatActivity {
             itemlayout.setVisibility(View.VISIBLE);
         }
 
-        drawer_txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                PopupMenu popup = new PopupMenu(MainActivity.this, drawer_txt);
-                //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        if(item.getTitle().equals("By Date")){
-
-                            if(isSortDateAc) {
-                                isSortDateAc = false;
-                                Toast.makeText(getApplicationContext(),"Descending Order Date",Toast.LENGTH_SHORT).show();
-                                Collections.sort(listNotes, new Comparator<Notes>(){
-                                    DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
-
-                                    public int compare(Notes obj1, Notes obj2) {
-                                        // ## Sorting Datewise order
-                                        if(obj1.getCreated() > obj2.getCreated()) return 1;
-                                        else if(obj1.getCreated() < obj2.getCreated()) return -1;
-                                        else return 0;
-                                    }
-                                });
-
-                            }
-                            else{
-                                isSortDateAc = true;
-                                Toast.makeText(getApplicationContext(),"Ascending Order Date",Toast.LENGTH_SHORT).show();
-                                Collections.sort(listNotes, new Comparator<Notes>(){
-                                    DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
-
-                                    public int compare(Notes obj1, Notes obj2) {
-                                        // ## Sorting Datewise order
-                                        if(obj1.getCreated() < obj2.getCreated()) return 1;
-                                        else if(obj1.getCreated() > obj2.getCreated()) return -1;
-                                        else return 0;
-                                    }
-                                });
-                            }
-
-                        }else {
-                            //sorting functionality
-                            if(isSortTitleAc){
-                                isSortTitleAc = false;
-                                Toast.makeText(getApplicationContext(),"Descending Order",Toast.LENGTH_SHORT).show();
-                                Collections.sort(listNotes, new Comparator<Notes>(){
-                                    public int compare(Notes obj1, Notes obj2) {
-                                        // ## Descending order
-                                        return obj2.getTitle().compareToIgnoreCase(obj1.getTitle()); // To compare string values
-                                        // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
-
-                                    }
-                                });
-                            }
-                            else{
-                                isSortTitleAc = true;
-                                Toast.makeText(getApplicationContext(),"Ascending Order",Toast.LENGTH_SHORT).show();
-
-                                Collections.sort(listNotes, new Comparator<Notes>(){
-                                    public int compare(Notes obj1, Notes obj2) {
-                                        // ## Ascending order
-                                        return obj1.getTitle().compareToIgnoreCase(obj2.getTitle()); // To compare string values
-                                        // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
-
-                                    }
-                                });
-                            }
-
-
-
-                        }
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        return true;
-                    }
-                });
-                popup.show();
-            }
-//            }
-        });
-
-        new_note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(),NewView_noteActivity.class);
-                i.putExtra("from","new");
-                startActivity(i);
-            }
-        });
         //search filter
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -239,6 +152,93 @@ public class MainActivity extends AppCompatActivity {
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(notesAdapter);
+    }
+
+    @OnClick(R.id.drawer_icon)
+    public void Sorting(){
+        PopupMenu popup = new PopupMenu(MainActivity.this, drawer_txt);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getTitle().equals("By Date")){
+
+                    if(isSortDateAc) {
+                        isSortDateAc = false;
+                        Toast.makeText(getApplicationContext(),"Descending Order Date",Toast.LENGTH_SHORT).show();
+                        Collections.sort(listNotes, new Comparator<Notes>(){
+                            DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+
+                            public int compare(Notes obj1, Notes obj2) {
+                                // ## Sorting Datewise order
+                                if(obj1.getCreated() > obj2.getCreated()) return 1;
+                                else if(obj1.getCreated() < obj2.getCreated()) return -1;
+                                else return 0;
+                            }
+                        });
+
+                    }
+                    else{
+                        isSortDateAc = true;
+                        Toast.makeText(getApplicationContext(),"Ascending Order Date",Toast.LENGTH_SHORT).show();
+                        Collections.sort(listNotes, new Comparator<Notes>(){
+                            DateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+
+                            public int compare(Notes obj1, Notes obj2) {
+                                // ## Sorting Datewise order
+                                if(obj1.getCreated() < obj2.getCreated()) return 1;
+                                else if(obj1.getCreated() > obj2.getCreated()) return -1;
+                                else return 0;
+                            }
+                        });
+                    }
+
+                }else {
+                    //sorting functionality
+                    if(isSortTitleAc){
+                        isSortTitleAc = false;
+                        Toast.makeText(getApplicationContext(),"Descending Order",Toast.LENGTH_SHORT).show();
+                        Collections.sort(listNotes, new Comparator<Notes>(){
+                            public int compare(Notes obj1, Notes obj2) {
+                                // ## Descending order
+                                return obj2.getTitle().compareToIgnoreCase(obj1.getTitle()); // To compare string values
+                                // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+
+                            }
+                        });
+                    }
+                    else{
+                        isSortTitleAc = true;
+                        Toast.makeText(getApplicationContext(),"Ascending Order",Toast.LENGTH_SHORT).show();
+
+                        Collections.sort(listNotes, new Comparator<Notes>(){
+                            public int compare(Notes obj1, Notes obj2) {
+                                // ## Ascending order
+                                return obj1.getTitle().compareToIgnoreCase(obj2.getTitle()); // To compare string values
+                                // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+
+                            }
+                        });
+                    }
+
+
+
+                }
+                recyclerView.getAdapter().notifyDataSetChanged();
+                return true;
+            }
+        });
+        popup.show();
+    }
+
+    @OnClick(R.id.new_note)
+    public void Click(){
+        Intent i=new Intent(getApplicationContext(),NewView_noteActivity.class);
+        i.putExtra("from","new");
+        startActivity(i);
     }
     //Searching particular note with alphabets
     private void search_note(String text) {

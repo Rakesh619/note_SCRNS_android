@@ -21,9 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,17 +34,31 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-public class NewView_noteActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+public class NewView_noteActivity extends AppCompatActivity {
+    @BindView(R.id.drawer_icon)
+    TextView drawer_txt;
+    @BindView(R.id.new_note)
+    ImageView new_note;
+    @BindView(R.id.txt_title)
+    TextView txt_title;
+    @BindView(R.id.attachment)
+    ImageView attach;
+    @BindView(R.id.new_title)
+    EditText title;
+    @BindView(R.id.description)
+    EditText description;
+    @BindView(R.id.select_subject)
+    Button subject;
+    @BindView(R.id.share_pic)
+    ImageView share_pic;
+    @BindView(R.id.record_path)
+    Button record_path;
     private static final int CAMERA_REQUEST = 102;
     private static final int GALLERY_REQUEST = 101;
-    TextView drawer_txt,txt_title,deal_txt;
-    ImageView new_note;
-    ImageView attach;
-    EditText title,description;
-    Button record,subject;
-    ImageView share_pic;
-    String path;
     private static final int REQUEST_CODE = 1;
     String pathAudio;
     Bitmap image;
@@ -56,23 +68,14 @@ public class NewView_noteActivity extends AppCompatActivity {
     LocationListener locationListener;
     DatabaseHelper databaseHelper;
     SubjectPojo selectedSubject;
-    Button record_path;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
-        drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(ImageView)findViewById(R.id.new_note);
-        attach=(ImageView)findViewById(R.id.attachment);
-        title=(EditText) findViewById(R.id.new_title);
-        txt_title=(TextView)findViewById(R.id.txt_title);
-        description=(EditText) findViewById(R.id.description);
-        subject=(Button) findViewById(R.id.select_subject);
-        share_pic=(ImageView) findViewById(R.id.share_pic);
-        record_path=(Button) findViewById(R.id.record_path);
-
+        ButterKnife.bind(this);
         drawer_txt.setVisibility(View.VISIBLE);
         drawer_txt.setText("Back");
         attach.setVisibility(View.VISIBLE);
@@ -121,83 +124,72 @@ public class NewView_noteActivity extends AppCompatActivity {
             new_note.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_done_all_24));
             getUpdatedNotes();
 
-
-
         }
-        record_path.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(),RecorderAudioActivity.class);
-                i.putExtra("from","update");
-                i.putExtra("path",audio_path);
-                startActivityForResult(i,112);
-            }
-        });
-        drawer_txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(i);
-            }
-        });
-
-        subject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getApplicationContext(), NotesSubjectActivity.class);
-                startActivityForResult(i, 11);
-            }
-        });
-        attach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gallery();
-            }
-        });
-
-        new_note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(from.equalsIgnoreCase("new")) {
-                    if (CheckValidation()) {
-                        Notes note;
-                        if (image != null) {
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
-                        } else {
-                            note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
-                        }
-                        databaseHelper.getNoteInterface().insert(note);
-                        drawer_txt.performClick();
-                    }
-                }else {
-                    if(CheckValidation()) {
-                        List<Notes> notes = databaseHelper.getNoteInterface().getAll();
-                        int index = getIntent().getIntExtra("selectedIndex",-1);
-                        if (index != -1){
-                            Notes note = notes.get(index);
-                            note.setTitle(title.getText().toString());
-                            note.setDescription(description.getText().toString());
-                            note.setSubject_id_fk(selectedSubject.getSubject_id());
-                            if(image != null){
-                                note.setNote_image(ImageConverter.convertImage2ByteArray(image));
-                            }if(pathAudio!=null){
-                                note.setNote_audio(pathAudio);
-
-                            }
-                            databaseHelper.getNoteInterface().update(note);
-                        }
-
-                        drawer_txt.performClick();
-                    }
-                }
-            }
-        });
 
 
     }
 
+    @OnClick(R.id.drawer_icon)
+    public void click(){
+        Intent i=new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(i);
+    }
 
+   @OnClick(R.id.new_note)
+   public void saveNote(){
+       if(from.equalsIgnoreCase("new")) {
+           if (CheckValidation()) {
+               Notes note;
+               if (image != null) {
+                   note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), ImageConverter.convertImage2ByteArray(image), pathAudio);
+               } else {
+                   note = new Notes(description.getText().toString(), title.getText().toString(), userlocation.getLatitude(), userlocation.getLongitude(), new Date().getTime(), selectedSubject.getSubject_id(), null, pathAudio);
+               }
+               databaseHelper.getNoteInterface().insert(note);
+               drawer_txt.performClick();
+           }
+       }else {
+           if(CheckValidation()) {
+               List<Notes> notes = databaseHelper.getNoteInterface().getAll();
+               int index = getIntent().getIntExtra("selectedIndex",-1);
+               if (index != -1){
+                   Notes note = notes.get(index);
+                   note.setTitle(title.getText().toString());
+                   note.setDescription(description.getText().toString());
+                   note.setSubject_id_fk(selectedSubject.getSubject_id());
+                   if(image != null){
+                       note.setNote_image(ImageConverter.convertImage2ByteArray(image));
+                   }if(pathAudio!=null){
+                       note.setNote_audio(pathAudio);
+
+                   }
+                   databaseHelper.getNoteInterface().update(note);
+               }
+
+               drawer_txt.performClick();
+           }
+       }
+   }
+
+   @OnClick(R.id.attachment)
+   public void attach(){
+       openAttachments();
+   }
+
+   @OnClick(R.id.record_path)
+   public void audio(){
+       Intent i=new Intent(getApplicationContext(),RecorderAudioActivity.class);
+       i.putExtra("from","update");
+       i.putExtra("path",audio_path);
+       startActivityForResult(i,112);
+   }
+
+   @OnClick(R.id.select_subject)
+   public void selectSubject(){
+       Intent i=new Intent(getApplicationContext(), NotesSubjectActivity.class);
+       startActivityForResult(i, 11);
+
+   }
     private void getUpdatedNotes() {
         List<Notes> notes = databaseHelper.getNoteInterface().getAll();
         int index = getIntent().getIntExtra("selectedIndex", -1);
@@ -222,13 +214,6 @@ public class NewView_noteActivity extends AppCompatActivity {
             selectedSubject = sub;
 
         }
-    }
-
-
-
-    private void selectImage() {
-        gallery();
-
     }
 
     private void startUpdateLocation() {
@@ -286,7 +271,6 @@ public class NewView_noteActivity extends AppCompatActivity {
             image = (Bitmap) data.getExtras().get("data");
             share_pic.setImageBitmap(image);
             share_pic.setVisibility(View.VISIBLE);
-            deal_txt.setVisibility(View.GONE);
             record_path.setVisibility(View.GONE);
         }
         else if(reqCode == 112 && resultCode == RESULT_OK){
@@ -330,7 +314,7 @@ public class NewView_noteActivity extends AppCompatActivity {
         }
     }
 
-    public void gallery() {
+    public void openAttachments() {
 
         final CharSequence[] items = { "Camera", "Gallery","Record Audio","Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

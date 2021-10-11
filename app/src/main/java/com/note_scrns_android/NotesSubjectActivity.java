@@ -23,9 +23,18 @@ import com.note_scrns_android.Models.SubjectPojo;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class NotesSubjectActivity extends AppCompatActivity {
-    TextView drawer_txt,txt_title;
+    @BindView(R.id.drawer_icon)
+    TextView drawer_txt;
+    @BindView(R.id.new_note)
     ImageView new_note;
+    @BindView(R.id.txt_title)
+    TextView txt_title;
+
     RecyclerView recyclerView;
     subjectlist_Adapter madapter;
     List<SubjectPojo> list;
@@ -34,9 +43,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notesubject);
-        drawer_txt=(TextView)findViewById(R.id.drawer_icon);
-        new_note=(ImageView)findViewById(R.id.new_note);
-        txt_title=(TextView)findViewById(R.id.txt_title);
+        ButterKnife.bind(this);
 
         recyclerView=(RecyclerView) findViewById(R.id.note_recycler);
         drawer_txt.setVisibility(View.VISIBLE);
@@ -45,55 +52,7 @@ public class NotesSubjectActivity extends AppCompatActivity {
         txt_title.setText("Subjects");
         list = DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll();
 
-        drawer_txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-
-            }
-        });
-
-        new_note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
-                LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View dialogView = inflater.inflate(R.layout.subject_dialog, null);
-                mainDialog.setView(dialogView);
-
-                final Button save = (Button) dialogView.findViewById(R.id.save);
-                final ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
-                final EditText sub = (EditText) dialogView.findViewById(R.id.sub_txt);
-                final AlertDialog alertDialog = mainDialog.create();
-                alertDialog.show();
-
-                save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //save item
-                        if(sub.getText().toString().equals("")) {
-                            Toast.makeText(getApplicationContext(),"Please enter Subject",Toast.LENGTH_SHORT).show();
-                            alertDialog.dismiss();
-                        }else {
-                            SubjectPojo subject = new SubjectPojo(sub.getText().toString());
-
-                            DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().insert(subject);
-                            madapter.list.clear();
-                            madapter.list.addAll(DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll());
-                            recyclerView.getAdapter().notifyDataSetChanged();
-                            alertDialog.dismiss();
-                        }
-                    }
-                });
-                cross.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
-                madapter = new subjectlist_Adapter(NotesSubjectActivity.this,list) {
+        madapter = new subjectlist_Adapter(NotesSubjectActivity.this,list) {
                     @Override
                     public void deleteSubject(final int pos) {
 
@@ -182,7 +141,49 @@ public class NotesSubjectActivity extends AppCompatActivity {
                 RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(madapter);
+    }
 
+    @OnClick(R.id.new_note)
+    public void create(){
+        final AlertDialog.Builder mainDialog = new AlertDialog.Builder(NotesSubjectActivity.this);
+        LayoutInflater inflater = (LayoutInflater)getApplicationContext() .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.subject_dialog, null);
+        mainDialog.setView(dialogView);
 
+        final Button save = (Button) dialogView.findViewById(R.id.save);
+        final ImageView cross=(ImageView) dialogView.findViewById(R.id.cross);
+        final EditText sub = (EditText) dialogView.findViewById(R.id.sub_txt);
+        final AlertDialog alertDialog = mainDialog.create();
+        alertDialog.show();
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //save item
+                if(sub.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(),"Please enter Subject",Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
+                }else {
+                    SubjectPojo subject = new SubjectPojo(sub.getText().toString());
+
+                    DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().insert(subject);
+                    madapter.list.clear();
+                    madapter.list.addAll(DatabaseHelper.getInstance(NotesSubjectActivity.this).getSubjectInterface().getAll());
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    alertDialog.dismiss();
+                }
+            }
+        });
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    @OnClick(R.id.drawer_icon)
+    public void click(){
+        finish();
     }
 }
