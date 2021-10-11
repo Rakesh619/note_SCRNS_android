@@ -93,13 +93,11 @@ public class RecorderAudioActivity extends AppCompatActivity {
     public void click(){
         if(from.equalsIgnoreCase("new")) {
             Intent intent = new Intent();
-            //Subjects subject =  list.get(i);
             intent.putExtra("audio", path);
             setResult(RESULT_OK, intent);
             finish();
         }else {
             Intent intent = new Intent();
-            //Subjects subject =  list.get(i);
             intent.putExtra("audio", audio_path);
             setResult(RESULT_OK, intent);
             finish();
@@ -176,10 +174,6 @@ public class RecorderAudioActivity extends AppCompatActivity {
 
     public void start() throws IOException {
         verifyStoragePermissions(this);
-        String file_path=getApplicationContext().getFilesDir().getPath();
-
-        Long date=new Date().getTime();
-        Date current_time = new Date(Long.valueOf(date));
         String abc = getFilesDir().getAbsolutePath();
         File file= new File(abc);
         path =file+"/audio.m4a";

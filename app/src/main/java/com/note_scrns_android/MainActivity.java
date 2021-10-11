@@ -250,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         notesAdapter.updateList(temp);
-//        notesAdapter.notes = temp;
-//        recyclerView.getAdapter().notifyDataSetChanged();
+
     }
 }
